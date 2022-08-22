@@ -1,0 +1,25 @@
+this is the assignment as fall-2022/asgn7 but I guess I will be writing it
+again. that's chill!
+
+important:
+_top points to first EMPTY node
+
+todo:
+# constructors
+\\ Stack() // default constructor
+\\ Stack(const int size) // constructor w size size
+\\ Stack(const Stack & Obj) // copy constructor from &Obj
+\\ ~Stack() // destructor
+
+# tests
+\\ bool Full() // return true if stack is full
+\\ bool Empty() // return true if stack is empty
+\\ int Size() // return size of stack
+\ int Number() // return number of elements being stored
+
+# actions
+\ T Top() // returns top element, does not pop
+\ bool Push (const T item) // puts an item on the stack
+\ bool Pop() // pops an item off the stack
+Stack<T> &operator = (Stack<T> &s) // overload "="
+friend ostream &operator << <T>(ostream & os, Stack<T> &s) // overload "<<" 
