@@ -55,7 +55,8 @@ Stack<T>::Stack() {
 template < class T >
 Stack<T>::Stack(const int size) {
 	// constructor of size size
-	_size = size;
+	if (size > 0) { _size = size; }
+	else { _size = DEFAULTSIZE; }
 	_number = 0;
 	_top = 0;
 
@@ -69,6 +70,7 @@ Stack<T>::Stack(const Stack & Obj) {
 	_number = Obj._number;
 	_top = Obj._top;
 
+	delete[] _stack;
 	_stack = new T[_size];
 
 	// copies all values from Obj
@@ -105,7 +107,7 @@ bool Stack<T>::Empty() {
 	}
 
 template < class T >
-int Stack<T>::Size() {	return _size; }
+int Stack<T>::Size() { return _size; }
 
 template < class T >
 int Stack<T>::Number() { return _number; }
@@ -113,9 +115,8 @@ int Stack<T>::Number() { return _number; }
 template < class T >
 T Stack<T>::Top() {
 	// returns the (_top - 1) item because _top is a free node 
-	return _stack[_top-1];
+	return _stack[_top - 1];
 	}
-
 
 template < class T >
 bool Stack<T>::Push(const T item) {
@@ -145,5 +146,43 @@ bool Stack<T>::Pop() {
 		}
 	}
 
+template < class T >
+Stack<T>& Stack<T>::operator = (Stack<T> &s) {
+	_size = s._size;
+	_number = s._number;
+	_top = s._top;
+
+	// resizes stack to match
+	delete[] _stack;
+	_stack = new T[_size];
+	
+	for(int i = 0; i < _number; i++) {
+		_stack[i] = s._stack[i];
+		}
+
+	return *this;
+	}	
+
+template < class T >
+ostream& operator<< (ostream &os, Stack<T> &obj) {
+	os << "Status: " << endl;
+	os << "Empty: " << obj.Empty() << endl;
+	os << "Full: " << obj.Full() << endl;
+	os << "Stack Size: " << obj.Size() << endl;
+	os << "Number of items on Stack: " << obj.Number() << endl;
+	os << "The top element is " << obj.Top() << endl;
+ 
+	if (obj.Empty() == true) {
+		return os;
+	}
+	else {
+		os << "Pops -> ";
+		obj.Pop();
+		for(int i = obj._number - 1; i > -1; i--) {
+			os << obj._stack[i] << endl;
+		}
+	}
+	return os;
+}
 
 #endif
