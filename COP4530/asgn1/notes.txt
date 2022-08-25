@@ -1,0 +1,31 @@
+# Constructors 
+\ TList();
+\ TList(T val, int num);
+\ ~TList();
+\ TList(const TList& L);
+TList& operator=(const TList& L);
+TList(TList && L);
+TList& operator=(TList && L);
+
+# Functions
+\ bool isEmpty() const;
+\ void Clear();
+\ int GetSize() const;
+
+void InsertFront(const T& d);
+void InsertBack(const T& d);
+void RemoveFront();
+void RemoveBack();
+
+\ T& GetFirst() const;
+\ T& GetLast() const;
+
+TListIterator<T> GetIterator() const;
+TListIterator<T> GetIteratorEnd() const;
+
+void Insert(TListIterator<T> pos, const T& d);
+TListIterator<T> Remove(TListIterator<T> pos);
+
+void Print(std::ostream &os, char delim = ' ') const;
+
+
