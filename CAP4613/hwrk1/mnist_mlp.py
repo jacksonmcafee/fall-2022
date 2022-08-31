@@ -15,7 +15,7 @@ from keras.optimizers import RMSprop
 
 batch_size = 128
 num_classes = 10
-epochs = 20
+epochs = 5
 
 # the data, split between train and test sets
 (x_train, y_train), (x_test, y_test) = mnist.load_data()
@@ -54,3 +54,4 @@ history = model.fit(x_train, y_train,
 score = model.evaluate(x_test, y_test, verbose=0)
 print('Test loss:', score[0])
 print('Test accuracy:', score[1])
+
