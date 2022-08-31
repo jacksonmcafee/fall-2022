@@ -1,5 +1,7 @@
-// Pi.java for COP3252 Fall2022 Asgn1
-// Jackson McAfee, 29 Aug. 2022
+/*
+Pi.java for COP3252 Fall2022 Asgn1
+Jackson McAfee, 29 Aug. 2022
+*/
 
 import java.util.Scanner;
 
@@ -15,18 +17,18 @@ public class Pi {
 		System.out.printf("terms | PI approximation \n");
 		
 		// for loop to print
-		float value = 4;
+		float value = 0;
 		for (float i = 1; i < N_terms + 1; i++) {
-			if ( i == 1 ) {
-				value += 0;
-			}
-			else if ( i % 2 == 0 ) {
+			// 2 cases are simple:
+				// if i is odd, add (4 / 2n-1) to our total
+				// if i is even, subtract (4 / 2n-1) from our total			
+			if ( i % 2 == 0 ) {
 				value += (-4)/(2*i-1);
 			}
 			else {
 				value += (4)/(2*i-1);
 			}
-	   		System.out.printf("%d      %f\n", Math.round(i), value);
+	   		System.out.printf("%-7d %f\n", Math.round(i), value);
  		}
 	}
 }
