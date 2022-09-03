@@ -54,4 +54,3 @@ plt.show()
 x = np.linspace(-1, 4, 100)
 y = -W[0] / W[1] * x + (0.5 - b) / W[1]
 plt.scatter(inputs[:, 0], inputs[:, 1], c=predictions[:, 0] > 0.5)
-plt.plot(x, y, "-r")
