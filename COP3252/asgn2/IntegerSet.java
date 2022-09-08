@@ -3,6 +3,7 @@ IntegerSet.java for COP3252 Fall2022 Asgn2
 Jackson McAfee, 3 Sept. 2022
 */
 
+// Class IntegerSet
 public class IntegerSet {
 	private boolean[] intArr;	
 	private int arraySize = 101;
