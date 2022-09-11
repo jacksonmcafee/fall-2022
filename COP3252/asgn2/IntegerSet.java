@@ -21,6 +21,7 @@ public class IntegerSet {
 	public IntegerSet union(IntegerSet iSet) {
 		IntegerSet temp = new IntegerSet();
 		for (int i = 0; i < arraySize; i++) {
+			// if either arrays[i] are true, there is a union at i
 			if (this.intArr[i] == true || iSet.intArr[i] == true) {
 				temp.intArr[i] = true;
 			}
@@ -31,6 +32,7 @@ public class IntegerSet {
 	public IntegerSet intersection(IntegerSet iSet) {
 		IntegerSet temp = new IntegerSet();
 		for (int i = 0; i < arraySize; i++) {
+			// if both arrays[i] are true, there is a intersection at i
 			if (this.intArr[i] == true && iSet.intArr[i] == true) {
 				temp.intArr[i] = true;
 			}
@@ -39,11 +41,13 @@ public class IntegerSet {
 	}
 
 	public IntegerSet insertElement(int data) {
+		// set array[data] = true, regardless of original
 		this.intArr[data] = true;
 		return this; 
 	}
 
 	public IntegerSet deleteElement(int data) {
+		// set array[data] = false, regardless of original
 		this.intArr[data] = false;
 		return this;
 	}
@@ -67,14 +71,17 @@ public class IntegerSet {
 	}
 
 	public String toString() {
+		// create blank string obj to return
 		String returnString = "";
 		for (int i = 0; i < arraySize; i++) {
+			// if array[i] is true, that i is a member of the set
 			if (this.intArr[i] == true) {
 				returnString += i;
 				returnString += " ";
 			}
 		}
 
+		// if string is blank, append dash to indicate as such
 		if (returnString.length() == 0) {
 			returnString += "—";
 		}
