@@ -4,7 +4,7 @@
 const float X = 1.0;
 const int ARRAY_SIZE = 10;
 const float DEFAULT_REWARD = 5;
-const int NUM_STEPS = 10000;
+const int NUM_STEPS = 100;
 
 using namespace std;
 
@@ -34,8 +34,13 @@ float step_function(float tre[ARRAY_SIZE], float tra[ARRAY_SIZE], int step) {
 	// add to reward_total
 	reward = tra[loc]; 
 
+	cout << "Adjusting " << tre[loc] << " at " << loc;
+
 	// adjust expected rewards
-	tre[loc] = tre[loc] + (1/step)*(reward-tre[loc]);
+	// THIS DOESN'T WORK!!
+	tre[loc] = tre[loc] + (1/step)*(DEFAULT_REWARD-tre[loc]);
+
+	cout << " to " << tre[loc] << endl;
 
 	return reward;
 }
@@ -57,15 +62,7 @@ int main() {
 
 	// take step_num steps
 	for (int i = 0; i < NUM_STEPS; i++) {
-		if (i % 100 == 0 && i != 0) {
-			cout << i << "00 steps taken..." << endl;
-		}
 		reward_total += step_function(task_rewards_expected, task_rewards_actual, i);
-	}
-
-	// display expected and actual values 
-	for (int i = 0; i < ARRAY_SIZE; i++) {
-		cout << i << ". " << task_rewards_expected[i] << " / " << task_rewards_actual[i] << endl;
 	}
 
 	return 0;
