@@ -1,227 +1,159 @@
 template <class T>
 TList<T>::TList() {
-	// create head/tail node
-	Node<T>* current = new Node(0);
-
-	// assign default values
-	first = last = current;
+	// blank list has no content
+	first = last = nullptr;
 	size = 0;
 }
 
-/* ! check in post if size is accurate to # of nodes in list ! */
 template <class T>
 TList<T>::TList(T val, int num) {
-	// create first node, d = val
-	Node<T>* current = new Node(val);
-	
-	// set current node to head, point prev to nullptr
-	first = current;
-	first->prev = nullptr;
-
-	// increment size
-	size++;
-
-	// loop to create num - 1 new nodes and connect w/ node
+	// create first node, then for loop the rest of the nodes
+	Node<T>* node = new Node(val);
+	first = last = node;
 	for (int i = 0; i < num - 1; i++) {
-		// create new node, d = val
-		Node<T>* node = new Node(val); 
-		
-		// point current->next to new node, node->prev to current
-		current->next = node;
-		node->prev = current;
-
-		// increment size
-		size++;
-
-		// set current to node, loop
-		current = node;
+		InsertBack(val);
 	}
-
-	// set current node to tail, point next to nullptr
-	last = current;
-	last->next = nullptr;
 }
-
-/* !  check later by saving tail memory loc! */
-template <class T>	
+ 
+template <class T>
 TList<T>::~TList() {
-	// create iterator node, step through list until next->nullptr
-	Node<T>* current = new Node(0);
-	current = first;
-	
-	while(current->next != nullptr) {
-		// delete last node after stepping to next
-		delete current->prev;
-		current = current->next;
-	}
+	// create iterator, step through nodes and delete prev
 
-	// delete iterator node
-	delete current;
-
-	// clear first/last ptrs
-	first = last = nullptr;
-	size = 0;
 }
-
-/* on god this might not work, could be razing all of L.List */
-// copy constructor, deep copy
-template <class T>	
-TList<T>::TList(const TList& L) {
-	// create first node, d = L.head->data
-	Node<T>* current = new Node(L.head->data);
-
-	// create iterator node on L, set it to L.head
-	Node<T>* L_iterator = new Node(0);
-	L_iterator = L.first;
-	
-	// set head to current node, head->prev to nullptr
-	first = current;
-	first->prev = nullptr;
-
-	// copy L.size over
-	size = L.size;
-
-	// create size # of deep copies
-	// size doesn't get incremented because it's already L.size
-	for (int i = 0; i < size; i++) {
-		// create new node, d = L.iterator->data
-		Node<T> node = new Node(L.iterator->data);
-		current->next = *node;
-		node->prev = *current;
-
-		// move L.iterator to next node in L
-		L_iterator = L_iterator->next;
-
-		// move current to node
-		current = node;
-	}
-
-	// delete iterator node
-	delete L_iterator;
-
-	// assign vals to last
-	last = *current;
-	last->next = nullptr;
-}
-
-/* currently a hard copy of above, refactor later please... */
-template <class T>
-TList<T>& TList<T>::operator=(const TList& L) {
-	// create first node, d = L.head->data
-	Node<T>* current = new Node(L.head->data);
-
-	// create iterator node on L, set it to L.head
-	Node<T>* L_iterator = new Node(0);
-	L_iterator = L.first;
-	
-	// set head to current node, head->prev to nullptr
-	first = *current;
-	first->prev = nullptr;
-
-	// copy L.size over
-	size = L.size;
-
-	// create size # of deep copies
-	// size doesn't get incremented because it's already L.size
-	for (int i = 0; i < size; i++) {
-		// create new node, d = L.iterator->data
-		Node<T>* node = new Node(L.iterator->data);
-		current->next = *node;
-		node->prev = *current;
-
-		// move L.iterator to next node in L
-		L_iterator = L_iterator->next;
-
-		// move current to node
-		current = node;
-	}
-
-	// delete iterator node
-	delete L_iterator;
-
-	// assign vals to last
-	last = *current;
-	last->next = nullptr;
-}
-
-// BOTH UNFINISHED
-
-// move constructor, soft copy
-template <class T>
-TList<T>::TList(TList && L) {
-	// do something
-	std::cout << "do something" << std::endl;
-}
-
-// move operator, soft copy, can just point head to L
-template <class T>	
-TList<T>& TList<T>::operator=(TList && L)  {
-	// do something
-	std::cout << "do something" << std::endl;
-	return *this;
-}
-
-// THESE MIGHT WORK!!
-
-template <class T>	
-bool TList<T>::IsEmpty() const { return (size == 0 ? true : false); }
-
-/* might not work lol !!! */
-template <class T>	
-void TList<T>::Clear() {
-// create iterator node, step through list until next->nullptr
-	Node<T>* current = new Node(0);
-	current = first;
-	
-	while(current->next != nullptr) {
-		// delete last node after stepping to next
-		delete current->prev;
-		current = current->next;
-	}
-
-	// delete iterator node
-	delete current;
-
-	// clear first/last ptrs
-	first = last = nullptr;
-	size = 0;
-}
-
-template <class T>
-int TList<T>::GetSize() const { return size; }
-
-// ALL UNTOUCHED BELOW THIS LINE 
 
 template <class T>
 void TList<T>::InsertFront(const T& d) {
-	std::cout << "do something" << std::endl;
+	// create node to insert
+	Node<T>* node = new Node(d);
+
+	// set prev, next for new first node
+	node->prev = nullptr;
+	node->next = first;
+
+	// set prev for old first node
+	first->prev = node;
+
+	// set first to new first node
+	first = node;
+	size++;
 }
 
 template <class T>
 void TList<T>::InsertBack(const T& d) {
-	std::cout << "do something" << std::endl;
+	// create node to insert
+	Node<T>* node = new Node(d);
+	
+	// set prev, next for new last node
+	node->prev = last;
+	node->next = nullptr;
+
+	// set next for old last node
+	last->next = node;
+
+	// set last to new last node
+	last = node;
+	size++;
 }
 
 template <class T>
 void TList<T>::RemoveFront() {
-	std::cout << "do something" << std::endl;
+	// set node to first node
+	Node<T>* node = first;
+
+	// set prev for new first node, assign it to first node
+	node->next->prev = nullptr;
+	first = node->next;
+
+	// delete old first node
+	delete node;
+	size--;
 }
 
 template <class T>
 void TList<T>::RemoveBack() {
-	std::cout << "do something" << std::endl;
+	// set node to last node
+	Node<T>* node = last;
+
+	// set next for new last node, assign it to last node
+	node->prev->next = nullptr;
+	last = node->prev;
+
+	// delete old last node
+	delete node;
+	size--;
 }
 
+template <class T>
+void TList<T>::Clear() {
+
+}
+
+template <class T>
+int TList<T>::GetSize() const {	return size; }
+
+// returns data from first node
 template <class T>
 T& TList<T>::GetFirst() const {
-	std::cout << "do something" << std::endl;
-	T temp;
-	return temp;
+	if (size == 0) { return dummy; }
+	else { return first->data; }
+}	
+
+// returns data from last node
+template <class T>
+T& TList<T>::GetLast() const {
+	if (size == 0) { return dummy; }
+	else { return last->data; }
+}	
+
+template <class T>
+TListIterator<T> TList<T>::GetIterator() const {
+	TListIterator<T> itr = new TListIterator();
+	itr->ptr = first;
+	return itr;
 }
 
 template <class T>
-T& TList<T>::GetLast() const {
-	std::cout << "do something" << std::endl;
-	T temp;
-	return temp;
+TListIterator<T> TList<T>::GetIteratorEnd() const {
+	TListIterator<T> itr = new TListITerator();
+	itr->ptr = last;
+	return itr;
+}
+
+// TListIterator definitions below
+template <class T>
+TListIterator<T>::TListIterator() {	ptr = nullptr; }
+
+// returns true if next node exists
+template <class T>
+bool TListIterator<T>::HasNext() const {
+	if (ptr->next != nullptr) {	return true; }
+	else { return false; }
+}
+
+// returns true if prev node exists
+template <class T>
+bool TListIterator<T>::HasPrevious() const {
+	if (ptr->prev != nullptr) {	return true; }
+	else { return false; }
+}
+
+// returns iterator to next node
+template <class T>
+TListIterator TListIterator<T>::Next() {
+	TListIterator<T> itr = ptr->next;
+	return itr;
+}
+
+// returns iterator to previous node
+template <class T>
+TListIterator TListIterator<T>::Previous() {
+	TListIterator<T> itr = ptr->prev;
+	return itr;
+}
+
+// returns data of current node
+template <class T>
+T& TListIterator<T>::GetData() const { 
+	if (ptr != nullptr) { return ptr->data; }
+	else { return dummy; }
 }
