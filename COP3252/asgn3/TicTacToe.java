@@ -2,19 +2,15 @@
 particularly necessary. I'm new to Java and thought it might be fun to throw
 a few in just for a bit of practice. Might refactor entire block later. */ 
 
+import java.util.*;
+
 public class TicTacToe {
 
 	// constant
 	public static final String usage = "Usage: java TicTacToe [-c [1|2]]";
 
 	public static void main(String[] args) {
-
-		/*
-		playerNum == 0, 2 bots
-		playerNum == 1, p1 = human, p2 = bot
-		playerNum == 2, p1 = bot, p2 = human
-		playerNum == 3, 2 humans
-		*/
+		Scanner scanner = new Scanner(s);
 		// declare variables
 		int playerNum = 3;
 		
@@ -28,19 +24,72 @@ public class TicTacToe {
 			System.exit(1);
 		}
 
-		int winner = gameLoop();
+		// enter game loop here
+		int winner = gameLoop(playerNum);
 
+		switch (winner) {
+			case 1:
+				System.out.println("Player One wins!");
+			case 2:
+				System.out.println("Player Two wins!");
+			default:
+				System.out.println("Nobody wins! The game was a draw.");
+		}
 	}
 
-	 private static int gameLoop() {
+	 private static int gameLoop(int playerNum) {
 		int[][] board = new int[3][3]; // create 2D matrix "board"
 		boolean gameActive = true;
-		int winner = 0, turn = 0;
+		int winner = 0, turn = 1, move = 0;
+		int p1 = 0, p2 = 0; // if 0, player is computer, if 1, player is bot
 
+		// evaluates players based on playerNum
+		switch (playerNum) {
+			case 0:
+				// 2 bot players
+				break;
+
+			case 1:
+				// 1 bot player, real player is p1
+				p1 = 1;
+				break;
+
+			case 2:
+				// 1 bot player, real player is p2
+				p2 = 1;
+				break;
+
+			default:
+				// 2 real players
+				p1 = p2 = 1;
+				break;
+			}
+
+		// central game loop
 		while(gameActive) {
 			printBoard(board, turn);
 
-			
+			// check player turn
+			if (turn % 2 == 1) {
+				// odd, player 1's turn 
+				if (p1 == 0) {
+					move = computerInput(board);
+				}
+				else {
+					move = playerInput(board);
+				}
+			}
+			else {
+				// even, player 2's turn
+				if (p2 == 0) {
+					move = computerInput(board);
+				}
+				else {
+					move = playerInput(board);
+				}
+			}
+
+			// check if win condition has been met
 
 			turn++;
 			if (turn == 9) {
@@ -49,6 +98,21 @@ public class TicTacToe {
 		}
 		return winner;
 	} 
+
+	private static int playerInput(int[][] board) {
+		// gets player move input 
+		int move = 0;
+		while()
+
+		return move;
+	}
+
+	private static int computerInput(int[][] board) {
+		// generates computer move input
+		int move = 0;
+
+		return move;
+	}
 
 	private static void printBoard(int[][] board, int turn) {
 		System.out.printf("Turn %d:%n", turn+1);
