@@ -75,8 +75,25 @@ T TList<T>::dummy;		// initialization of static member
 // **********************************************************
 
 template <typename T>
-TList<T> operator+(const TList<T>& t1, const TList<T>& t2);
+TList<T> operator+(const TList<T>& t1, const TList<T>& t2) {
 
+   // create list to return, equal to first list
+   TList<T> retList = t1;
+
+   // if second list is empty, return w/o an operation
+   if (t2.GetSize() == 0) { return retList; }
+
+   // create iterator on second list, first stays the same
+   TListIterator<T> itr = t2.GetIterator();
+   
+   // iterate through second list, push iterator data, continue
+   for (int i = 0; i < t2.GetSize(); i++) {
+      retList.InsertBack(itr.GetData());
+      itr.Next();
+   }
+   
+   return retList;
+}
 
 // **********************************************************
 // Declaration of class TListIterator                       *

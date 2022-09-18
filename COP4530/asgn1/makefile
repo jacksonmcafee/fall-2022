@@ -1,7 +1,7 @@
-OBJS	= driver.o
-SOURCE	= driver.cpp
-HEADER	= tlist.h tnode.h
-OUT	= asgn2
+OBJS	= mydriver.o
+SOURCE	= mydriver.cpp
+HEADER	= tlist.h tlist.hpp tnode.h
+OUT	= mydriver.x
 CC	 = g++
 FLAGS	 = -g -c -Wall
 LFLAGS	 = 
@@ -9,8 +9,8 @@ LFLAGS	 =
 all: $(OBJS)
 	$(CC) -g $(OBJS) -o $(OUT) $(LFLAGS)
 
-driver.o: driver.cpp
-	$(CC) $(FLAGS) driver.cpp 
+mydriver.o: mydriver.cpp
+	$(CC) $(FLAGS) mydriver.cpp 
 
 clean:
 	rm -f $(OBJS) $(OUT)
