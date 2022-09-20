@@ -10,7 +10,6 @@ public class TicTacToe {
 	public static final String usage = "Usage: java TicTacToe [-c [1|2]]";
 
 	public static void main(String[] args) {
-		Scanner scanner = new Scanner(s);
 		// declare variables
 		int playerNum = 3;
 		
@@ -39,8 +38,9 @@ public class TicTacToe {
 
 	 private static int gameLoop(int playerNum) {
 		int[][] board = new int[3][3]; // create 2D matrix "board"
+		int[] moves = new int[] {1, 2, 3, 4, 5, 6, 7, 8, 9};
 		boolean gameActive = true;
-		int winner = 0, turn = 1, move = 0;
+		int winner = 0, turn = 0, move = 0;
 		int p1 = 0, p2 = 0; // if 0, player is computer, if 1, player is bot
 
 		// evaluates players based on playerNum
@@ -73,21 +73,23 @@ public class TicTacToe {
 			if (turn % 2 == 1) {
 				// odd, player 1's turn 
 				if (p1 == 0) {
-					move = computerInput(board);
+					move = computerInput(board, moves);
 				}
 				else {
-					move = playerInput(board);
+					move = playerInput(board, moves);
 				}
 			}
 			else {
 				// even, player 2's turn
 				if (p2 == 0) {
-					move = computerInput(board);
+					move = computerInput(board, moves);
 				}
 				else {
-					move = playerInput(board);
+					move = playerInput(board, moves);
 				}
 			}
+
+			printBoard(board, turn);
 
 			// check if win condition has been met
 
@@ -99,17 +101,62 @@ public class TicTacToe {
 		return winner;
 	} 
 
-	private static int playerInput(int[][] board) {
-		// gets player move input 
+	private static int playerInput(int[][] board, int[] moves) {
+		// gets player move input
+		
+		// declare vars, new scanner
+		Scanner s = new Scanner(System.in);
 		int move = 0;
-		while()
+		boolean moveIllegal = true;
 
+		// get input from user
+		while(moveIllegal) {
+			System.out.println("Input your move: ");
+			move = s.nextInt();
+			
+			// iterate through moves, check if move is contained within
+			for (int x : moves) {
+				// if move is found, break out of loop and take input again
+				if (x == move) {
+					moveIllegal = false;
+					break;
+				}
+				else {
+					System.out.println("Invalid selection. Try again.");
+					break;
+				}
+			}
+		}
+		// remove move from list of possible moves
+		moves[move-1] = 0;
+
+		// close scanner, return
+		s.close();
 		return move;
 	}
 
-	private static int computerInput(int[][] board) {
+	// unfinished
+	private static int computerInput(int[][] board, int[] moves) {
 		// generates computer move input
+		Random r = new Random();
 		int move = 0;
+		boolean moveIllegal = true;
+
+		// get input from user
+		while(moveIllegal) {
+			move = r.ints(1, 10).findFirst().getAsInt();
+
+			// iterate through moves, check if move is contained within
+			for (int x : moves) {
+				// if move is found, break out of loop and take input again
+				if (x == move) {
+					moveIllegal = false;
+					break;
+				}
+			}
+		}
+		// remove move from list of possible moves
+		moves[move-1] = 0;
 
 		return move;
 	}
@@ -119,6 +166,7 @@ public class TicTacToe {
 
 		for (int i = 0; i < 3; i++) {
 			for (int j = 0; j < 3; j++) {
+				// if "0" found, print an "X", if "1" found, print an "O"
 				System.out.printf("%d ", board[i][j]);
 			}
 			System.out.printf("%n");
