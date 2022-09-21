@@ -39,6 +39,7 @@ public class TicTacToe {
 
 	 private static int gameLoop(int playerNum) {
 		int[][] board = new int[3][3]; // create 2D matrix "board"
+		int[] movesLeft = new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9};
 		boolean gameActive = true;
 		int winner = 0, turn = 1, move = 0;
 		int p1 = 0, p2 = 0; // if 0, player is computer, if 1, player is bot
@@ -102,7 +103,12 @@ public class TicTacToe {
 	private static int playerInput(int[][] board) {
 		// gets player move input 
 		int move = 0;
-		while()
+		boolean illegalMove = true;
+		while (illegalMove) {
+			System.out.println("Input the number cell you want to fill: ");
+			move = s.nextInt();
+			if ()
+		}
 
 		return move;
 	}
