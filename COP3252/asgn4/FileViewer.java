@@ -1,7 +1,8 @@
-import java.util.Scanner;
-import java.util.Arrays;
-import java.util.Date;
 import java.io.*;
+import java.util.*;
+import java.nio.file.*;
+
+// Jackson McAfee, COP3252 Adv. Java Prog. Asgn 4
 
 // I am a huge fan of the ternary operator and might have overused it here. Oops!
 
@@ -22,6 +23,9 @@ public class FileViewer {
 				fileParam1 = ".";
 				maybeDirectory = true;
 			}
+			else {
+				fileParam1 = args[0]; // file passed 
+			}
 		}
 		else if (args.length == 2) {
 			String flag = args[0];
@@ -34,14 +38,14 @@ public class FileViewer {
 			}
 			else if (flag.matches("-c")) {
 				// not enough params
-				PrintError(0);
+				PrintError("");
 			}
 			else if (flag.matches("-d")) {
 				// not enough params
-				PrintError(0);
+				PrintError("");
 			}
 			else {
-				PrintError(0);
+				PrintError("");
 			}
 		}
 		else if (args.length == 3) {
@@ -57,22 +61,11 @@ public class FileViewer {
 				fileParam2 = args[2];
 			}
 			else {
-				PrintError(2);
+				PrintError("Invalid destination file.");
 			}
 		}
 		else {
-			PrintError(0);
-		}
-
-		try {
-			System.out.println("Trying something!");
-
-			File f = new File(fileParam1);
-		}
-		catch (Exception e) {
-			System.out.println("This block handles all exception types");
-
-			PrintError(1);
+			PrintError("");
 		}
 
 		if (selection == 1) {
@@ -109,45 +102,95 @@ public class FileViewer {
 			}
 			else {
 				// not valid file, not valid directory, 
-				PrintError(1);
+				PrintError("Invalid file or directory passed.");
 			}
 		}
 		else if (selection == 2) {
 			// "-v" was passed
-			File f = new File(fileParam1);
-			if(f.isFile()){  // if the file passed exists and is a file, 
-				Scanner s = new Scanner(f);
-				while(s.hasNextLine())
-					System.out.println(s.nextLine()); // prints out each line while there are still lines to print
-				s.close();
+			try {
+				File f = new File(fileParam1);
+				if(f.isFile()){  // if the file passed exists and is a file, 
+					Scanner s = new Scanner(f);
+					while(s.hasNextLine())
+						System.out.println(s.nextLine()); // prints out each line while there are still lines to print
+					s.close();
+				}
+			}
+			catch (Exception e) {
+				PrintError("File not found.");
 			}	
 		}
 		else if (selection == 3) {
 			// "-c" was passed
-			System.out.println("C was passed!");
+			if (fileParam1.matches(fileParam2)) {
+				PrintError("Cannot copy file to itself.");
+			}
 
-		}
+			try {
+				// try to create files based on param1/param2
+				File f1 = new File(fileParam1);
+				File f2 = new File(fileParam2); 
+
+				if (f2.isFile()) {
+					PrintError("That file already exists");
+				}
+
+				// create in/out streams based on files
+				FileInputStream in = new FileInputStream(f1);
+				FileOutputStream out = new FileOutputStream(f2);
+
+				int i;
+	            while ((i = in.read()) != -1) {
+	            	// write each byte from instream to outstream
+	                out.write(i);
+            	}
+
+            	if (in != null) {
+                	in.close(); // close instream
+            	}
+            	if (out != null) {
+               		out.close(); // close outstream
+            	}
+			}
+			catch (Exception e) {
+				// if something throws, catch here
+				PrintError("File not found.");
+			}	
+       		System.out.println("File was copied successfully!");
+    	}
 		else {
 			// selection == 4, "-d" was passed
-			System.out.println("D was passed!");
-		}
+			try {
+				Path path1 = FileSystems.getDefault().getPath(fileParam1);
+				Path path2 = FileSystems.getDefault().getPath(fileParam2);
 
+				BufferedReader bf1 = Files.newBufferedReader(path1);
+         		BufferedReader bf2 = Files.newBufferedReader(path2);
+
+         		long lineNumber = 1;
+	        	String line1 = "", line2 = "";
+	        	while ((line1 = bf1.readLine()) != null) {
+	            	line2 = bf2.readLine();
+	            	if (line2 == null || !line1.equals(line2)) {
+	                	System.out.printf("The two files %s and %s are not the same. %n", fileParam1, fileParam2);
+	                	return;
+	            	}
+	            	lineNumber++;
+	        	}
+	        	if (bf2.readLine() == null) {
+	               	System.out.printf("The two files %s and %s are the same. %n", fileParam1, fileParam2);
+	        	}
+	        	else {
+	               	System.out.printf("The two files %s and %s are not the same. %n", fileParam1, fileParam2);
+	        	}
+        	}
+        	catch (Exception e) {
+        		PrintError("File not found.");
+        	}	
+    	}
 	}
-	private static void PrintError(int code) {
-		switch (code) {
-			case 1:
-				System.err.println("Invalid filepath.");
-				break;
-
-			case 2:
-				System.err.println("Invalid destination file.");
-				break;
-			
-			default:
-				break;
-
-		}
-		
+	private static void PrintError(String s) {
+		System.err.println(s);
 		System.err.printf("Usage: java -jar hw4.jar [-i [<file>|<directory>]|-v <file>|-c <sourceFile> <destFile>|-d <file1> <file2>]\n");
 		System.exit(0);
 	}
