@@ -1,16 +1,15 @@
-OBJS	= mydriver.o
-SOURCE	= mydriver.cpp
-HEADER	= tlist.h tlist.hpp tnode.h
-OUT	= mydriver.x
-CC	 = g++
-FLAGS	 = -g -c -Wall
-LFLAGS	 = 
+all: main
 
-all: $(OBJS)
-	$(CC) -g $(OBJS) -o $(OUT) $(LFLAGS)
+CXX = clang++
+override CXXFLAGS += -g -Wno-everything
 
-mydriver.o: mydriver.cpp
-	$(CC) $(FLAGS) mydriver.cpp 
+SRCS = $(shell find . -name '.ccls-cache' -type d -prune -o -type f -name '*.cpp' -print | sed -e 's/ /\\ /g')
+
+main: $(SRCS)
+	$(CXX) $(CXXFLAGS) $(SRCS) -o "$@"
+
+main-debug: $(SRCS)
+	$(CXX) $(CXXFLAGS) -O0 $(SRCS) -o "$@"
 
 clean:
-	rm -f $(OBJS) $(OUT)
+	rm -f main main-debug

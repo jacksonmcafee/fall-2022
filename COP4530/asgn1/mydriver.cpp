@@ -18,6 +18,7 @@ it as is. Godspeed.
 #include <iostream>
 #include <string>
 
+#include "leaker.h"
 #include "tlist.h"
 
 template <typename T> 

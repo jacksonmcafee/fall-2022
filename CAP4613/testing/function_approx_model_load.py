@@ -1,21 +1,17 @@
-# function_approx.py for CAP4613
-# Jackson McAfee, Fall-22
-
+import keras
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.metrics import mean_absolute_error
-from keras.models import Sequential
-from keras.layers import Dense
 from numpy import arange
 from numpy import asarray
 from math import sin
 from math import pi
 from matplotlib import pyplot
 
-# define variables
-epochs = 500
+epochs = 15
 batch_size = 10
 
-# define x as the range from -2 to 2, with a step size of 0.04 for 100 total steps
+model = keras.models.load_model("decent_model")
+
 x = asarray([i for i in arange(-2.00, 2.00, 0.04)])
 # define y as the function g(x) along x 
 y = asarray([1 + sin((3*i*pi)/2) for i in x])
@@ -32,21 +28,7 @@ scale_y = MinMaxScaler()
 y = scale_y.fit_transform(y)
 print(x.min(), x.max(), y.min(), y.max())
 
-# create sequential model (1 in, 1 out)
-model = Sequential()
-
-# add layers
-model.add(Dense(10, input_dim=1, activation='relu', kernel_initializer='he_uniform'))
-model.add(Dense(10, activation='relu'))
-model.add(Dense(10, activation='relu'))
-model.add(Dense(1))
-
-# define the loss function and optimization algorithm
-model.compile(loss='mae', optimizer='adam')
-model.summary()
-
-# ft the model on the training dataset
-model.fit(x, y, epochs=epochs, batch_size=batch_size, verbose=0)
+model.fit(x, y, epochs, batch_size)
 
 # make predictions for the input data
 yhat = model.predict(x)
@@ -69,3 +51,5 @@ pyplot.xlabel('Input Variable (x)')
 pyplot.ylabel('Output Variable (y)')
 pyplot.legend()
 pyplot.show()
+
+model.save("my_model")

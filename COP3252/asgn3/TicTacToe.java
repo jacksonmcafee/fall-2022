@@ -38,14 +38,13 @@ public class TicTacToe {
 
 	 private static int gameLoop(int playerNum) {
 		int[][] board = new int[3][3]; // create 2D matrix "board"
-<<<<<<< HEAD
+
 		int[] movesLeft = new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9};
-=======
 		int[] moves = new int[] {1, 2, 3, 4, 5, 6, 7, 8, 9};
->>>>>>> 444d009427cacb384fb926550ad738890365efbb
 		boolean gameActive = true;
-		int winner = 0, turn = 0, move = 0;
+		int winner = 0, turn = 1, move = 0;
 		int p1 = 0, p2 = 0; // if 0, player is computer, if 1, player is bot
+		int currentPlayer = 0;
 
 		// evaluates players based on playerNum
 		switch (playerNum) {
@@ -69,23 +68,33 @@ public class TicTacToe {
 				break;
 			}
 
+		// print board before game starts
+		printBoard(board, turn);
+		System.out.println("Good luck! \n");
+
 		// central game loop
 		while(gameActive) {
-			printBoard(board, turn);
 
 			// check player turn
 			if (turn % 2 == 1) {
+				System.out.println("It is player one's turn!");
+				currentPlayer = 1;
 				// odd, player 1's turn 
 				if (p1 == 0) {
+					// if p1 == 0, computer controls p1
 					move = computerInput(board, moves);
 				}
 				else {
+					// if p1 != 0, human controls p1 
 					move = playerInput(board, moves);
 				}
 			}
 			else {
+				System.out.println("It is player two's turn!");
+				currentPlayer = 2;
 				// even, player 2's turn
 				if (p2 == 0) {
+					// same logic as above
 					move = computerInput(board, moves);
 				}
 				else {
@@ -93,17 +102,37 @@ public class TicTacToe {
 				}
 			}
 
+			// play move
+			playMove(board, move, currentPlayer);
+
+			// print updated board after move
 			printBoard(board, turn);
 
 			// check if win condition has been met
 
+
 			turn++;
-			if (turn == 9) {
+			if (turn == 10) {
 				gameActive = false;
 			}
 		}
 		return winner;
 	} 
+
+	private static void playMove(int[][] board, int move, int currentPlayer) {
+		// play move, sort move to if arm based on what range it falls in 
+			if (move < 4) {
+				board[0][move - 1] = currentPlayer;
+			}
+			else if (move >= 4 && move < 7) {
+				// could use modulo, this logic is just easier
+				board[1][move - 4] = currentPlayer;
+			}
+			else {
+				// same as above
+				board[2][move - 7] = currentPlayer;
+			}
+	}
 
 	private static int playerInput(int[][] board, int[] moves) {
 		// gets player move input
@@ -111,33 +140,24 @@ public class TicTacToe {
 		// declare vars, new scanner
 		Scanner s = new Scanner(System.in);
 		int move = 0;
-<<<<<<< HEAD
-		boolean illegalMove = true;
-		while (illegalMove) {
-			System.out.println("Input the number cell you want to fill: ");
-			move = s.nextInt();
-			if ()
-		}
-=======
+		
 		boolean moveIllegal = true;
->>>>>>> 444d009427cacb384fb926550ad738890365efbb
 
 		// get input from user
 		while(moveIllegal) {
 			System.out.println("Input your move: ");
 			move = s.nextInt();
 			
-			// iterate through moves, check if move is contained within
-			for (int x : moves) {
-				// if move is found, break out of loop and take input again
-				if (x == move) {
-					moveIllegal = false;
-					break;
-				}
-				else {
-					System.out.println("Invalid selection. Try again.");
-					break;
-				}
+			/*
+			Because I know that the only location of move is at 
+			moves[move-1], I can just check if that value is 0 or not. 
+			If 0, it is no longer valid, else, it is still playable.
+			*/
+			if (moves[move-1] == 0) {
+				continue;
+			}
+			else {
+				moveIllegal = false;
 			}
 		}
 		// remove move from list of possible moves
@@ -148,7 +168,6 @@ public class TicTacToe {
 		return move;
 	}
 
-	// unfinished
 	private static int computerInput(int[][] board, int[] moves) {
 		// generates computer move input
 		Random r = new Random();
@@ -157,15 +176,13 @@ public class TicTacToe {
 
 		// get input from user
 		while(moveIllegal) {
-			move = r.ints(1, 10).findFirst().getAsInt();
+			move = r.nextInt(9) + 1;
 
-			// iterate through moves, check if move is contained within
-			for (int x : moves) {
-				// if move is found, break out of loop and take input again
-				if (x == move) {
-					moveIllegal = false;
-					break;
-				}
+			if (moves[move-1] == 0) {
+				continue;
+			}
+			else {
+				moveIllegal = false;
 			}
 		}
 		// remove move from list of possible moves
@@ -175,15 +192,20 @@ public class TicTacToe {
 	}
 
 	private static void printBoard(int[][] board, int turn) {
-		System.out.printf("Turn %d:%n", turn+1);
+		System.out.printf("Turn %d:%n", turn);
 
 		for (int i = 0; i < 3; i++) {
 			for (int j = 0; j < 3; j++) {
 				// if "0" found, print an "X", if "1" found, print an "O"
-				System.out.printf("%d ", board[i][j]);
+				String move = "";
+				if (board[i][j] == 1) { move = "X"; }
+				else if (board[i][j] == 2) { move = "O"; }
+				else { move = "_"; }
+				System.out.printf("%s ", move);
 			}
 			System.out.printf("%n");
 		}
+		System.out.println();
 	}
 	
 	private static int parseArgs(String[] args) {
