@@ -29,15 +29,19 @@ public class TicTacToe {
 		switch (winner) {
 			case 1:
 				System.out.println("Player One wins!");
+				break;
 			case 2:
 				System.out.println("Player Two wins!");
-			default:
+				break;
+			case 0:
 				System.out.println("Nobody wins! The game was a draw.");
+				break;
 		}
 	}
 
 	 private static int gameLoop(int playerNum) {
-		int[][] board = new int[3][3]; // create 2D matrix "board"
+		// create 2D matrix "board"
+		int[][] board = new int[3][3];
 
 		int[] movesLeft = new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9};
 		int[] moves = new int[] {1, 2, 3, 4, 5, 6, 7, 8, 9};
@@ -72,6 +76,8 @@ public class TicTacToe {
 		printBoard(board, turn);
 		System.out.println("Good luck! \n");
 
+		Scanner s = new Scanner(System.in);
+
 		// central game loop
 		while(gameActive) {
 
@@ -86,7 +92,7 @@ public class TicTacToe {
 				}
 				else {
 					// if p1 != 0, human controls p1 
-					move = playerInput(board, moves);
+					move = playerInput(board, moves, s);
 				}
 			}
 			else {
@@ -98,7 +104,7 @@ public class TicTacToe {
 					move = computerInput(board, moves);
 				}
 				else {
-					move = playerInput(board, moves);
+					move = playerInput(board, moves, s);
 				}
 			}
 
@@ -109,15 +115,86 @@ public class TicTacToe {
 			printBoard(board, turn);
 
 			// check if win condition has been met
-
+			winner = isGameOver(board);
 
 			turn++;
-			if (turn == 10) {
+			if (turn == 10 || winner == 1 || winner == 2) {
 				gameActive = false;
 			}
 		}
+
+		/*
+		Had a very interesting error where closing my scanner
+		would close System.in. I just got around that by declaring my
+		scanner in main and just handing it to my functions that needed
+		it. Any ideas on how to get around it are appreciated!
+		*/
+
+		s.close();
 		return winner;
 	} 
+
+	static int isGameOver(int[][] board) {
+		/* 
+		I feel like there has to be a much cleaner way to do this
+		but I cannot be bothered to stare at this for another minute.
+		
+		I was going to try and use some nice mathematical trick so that I
+		could just add along rows/columns/diagonals and determine if a win
+		had been met but I really couldn't be bothered when this was an easier
+		method. 
+		*/
+
+		// convert ints to Strings for easy concatenation
+		String[][] s_board = new String[3][3];
+		for (int i = 0; i < 3; i++) {
+			for (int j = 0; j < 3; j++) {
+				s_board[i][j] = String.valueOf(board[i][j]);
+			}
+		}
+
+		int a = 0;
+
+		while (a < 8) {
+			String concat = "";
+			switch (a) {
+			case 0: 
+				concat = s_board[0][0] + s_board[0][1] + s_board[0][2]; 
+				break; 
+			case 1: 
+				concat = s_board[1][0] + s_board[1][1] + s_board[1][2]; 
+				break; 
+			case 2: 
+				concat = s_board[2][0] + s_board[2][1] + s_board[2][2]; 
+				break; 
+			case 3: 
+				concat = s_board[0][0] + s_board[1][0] + s_board[2][0]; 
+				break; 
+			case 4: 
+				concat = s_board[0][1] + s_board[1][1] + s_board[2][1]; 
+				break; 
+			case 5: 
+				concat = s_board[0][2] + s_board[1][2] + s_board[2][2]; 
+				break; 
+			case 6: 
+				concat = s_board[0][0] + s_board[1][1] + s_board[2][2]; 
+				break; 
+			case 7: 
+				concat = s_board[0][2] + s_board[1][1] + s_board[2][0]; 
+				break; 
+			}
+
+			if (concat.equals("111")) {
+				return 1;
+				}
+			else if (concat.equals("222")) {
+				return 2;
+				}
+			
+			a++;
+			} 
+			return 0;
+		}
 
 	private static void playMove(int[][] board, int move, int currentPlayer) {
 		// play move, sort move to if arm based on what range it falls in 
@@ -134,11 +211,8 @@ public class TicTacToe {
 			}
 	}
 
-	private static int playerInput(int[][] board, int[] moves) {
-		// gets player move input
-		
-		// declare vars, new scanner
-		Scanner s = new Scanner(System.in);
+	private static int playerInput(int[][] board, int[] moves, Scanner s) {
+		// declare vars
 		int move = 0;
 		
 		boolean moveIllegal = true;
@@ -147,7 +221,7 @@ public class TicTacToe {
 		while(moveIllegal) {
 			System.out.println("Input your move: ");
 			move = s.nextInt();
-			
+
 			/*
 			Because I know that the only location of move is at 
 			moves[move-1], I can just check if that value is 0 or not. 
@@ -163,11 +237,10 @@ public class TicTacToe {
 		// remove move from list of possible moves
 		moves[move-1] = 0;
 
-		// close scanner, return
-		s.close();
 		return move;
 	}
 
+	// unfinished
 	private static int computerInput(int[][] board, int[] moves) {
 		// generates computer move input
 		Random r = new Random();
