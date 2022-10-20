@@ -3,8 +3,10 @@ import java.util.Arrays;
 import java.util.Date;
 import java.io.*;
 
+// I am a huge fan of the ternary operator and might have overused it here. Oops!
+
 public class FileViewer {
-	public static void main(String[] args) throws FileNotFoundException, IOException {
+	public static void main(String[] args) throws Exception {
 
 		int selection = 1; 		 // 1 is info, 2 is view, 3 is copy, 4 is compare
 		String fileParam1 = " "; // for all use cases
@@ -32,6 +34,11 @@ public class FileViewer {
 			}
 			else if (flag.matches("-c")) {
 				// not enough params
+				PrintError(0);
+			}
+			else if (flag.matches("-d")) {
+				// not enough params
+				PrintError(0);
 			}
 			else {
 				PrintError(0);
@@ -50,61 +57,79 @@ public class FileViewer {
 				fileParam2 = args[2];
 			}
 			else {
-				PrintError(0);
+				PrintError(2);
 			}
 		}
 		else {
 			PrintError(0);
 		}
 
+		try {
+			System.out.println("Trying something!");
+
+			File f = new File(fileParam1);
+		}
+		catch (Exception e) {
+			System.out.println("This block handles all exception types");
+
+			PrintError(1);
+		}
+
 		if (selection == 1) {
+			// "-i" or nothing was passed
 			File f = new File(fileParam1);
 			long size = 0;
 
 			if (f.isFile()) {
-				System.out.println("File Path: "+ f.getAbsolutePath());
-				System.out.print("Is executable? ");
-				if(f.canExecute())
-					System.out.println("True");
-				else
-					System.out.println("False");
-				System.out.println("Size: " + f.length());
-				System.out.print("Last modified date: ");
-				long time = 0;
-				time = f.lastModified();
-				Date date = new Date(time);
-				System.out.println(date);
+				// prints filepath 
+				System.out.printf("File Path: %s %n", f.getAbsolutePath());
+				
+				// prints executable status
+				String executable = (f.canExecute() ? "True" : "False");
+				System.out.printf("Is executable?: %s %n", executable);
+
+				// prints size of file
+				System.out.printf("Size: %d bytes %n", f.length());
+				
+				// prints out date and time 
+				Date date = new Date(f.lastModified());
+				System.out.printf("Last Modified Date: %tc %n", date);
 			}
 			else if (f.isDirectory()) {
-				System.out.println("Size        Filename");
+				System.out.printf("%-10s %s %n", "Size", "Filename");
 				File[] files = f.listFiles();
 
 				for (File x : files) {
-					size = f.length();
-					if (f.isDirectory()) {
-						System.out.print("*    ");
-					}
-					else {
-						System.out.print(size + "       ");
-					}
-					System.out.println(f.getName());
+					// get filesize, if directory, set to *
+					size = x.length();
+					String name = (x.isDirectory() ? x.getName() + "*" : x.getName());
+
+					System.out.printf("%-10d %s %n", size, name);
 				}
 			}
 			else {
 				// not valid file, not valid directory, 
 				PrintError(1);
 			}
-
-
 		}
 		else if (selection == 2) {
-
+			// "-v" was passed
+			File f = new File(fileParam1);
+			if(f.isFile()){  // if the file passed exists and is a file, 
+				Scanner s = new Scanner(f);
+				while(s.hasNextLine())
+					System.out.println(s.nextLine()); // prints out each line while there are still lines to print
+				s.close();
+			}	
 		}
 		else if (selection == 3) {
+			// "-c" was passed
+			System.out.println("C was passed!");
 
 		}
 		else {
-			// selection == 4;
+			// selection == 4, "-d" was passed
+			System.out.println("D was passed!");
 		}
 
 	}
@@ -112,15 +137,18 @@ public class FileViewer {
 		switch (code) {
 			case 1:
 				System.err.println("Invalid filepath.");
-				System.exit(1);
+				break;
 
 			case 2:
 				System.err.println("Invalid destination file.");
-				System.exit(2);
-
+				break;
+			
 			default:
-				System.err.printf("Usage: java -jar hw4.jar [-i [<file>|<directory>]|-v <file>|-c <sourceFile> <destFile>|-d <file1> <file2>]\n");
-				System.exit(0);
+				break;
+
 		}
+		
+		System.err.printf("Usage: java -jar hw4.jar [-i [<file>|<directory>]|-v <file>|-c <sourceFile> <destFile>|-d <file1> <file2>]\n");
+		System.exit(0);
 	}
 }
