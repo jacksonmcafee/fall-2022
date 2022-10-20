@@ -1,0 +1,10 @@
+Task 2:   Analysis 
+
+    Analyze the worst-case run-time complexity of the member function clear() of Stack.
+
+    The worst-case run-time complexity of a SIMPLE clear() function,
+    which would just be O(n) because each pop() would just be O(1). 
+    This assumes a constant time pop(), which mine is not. However, if 
+    I shifted the resizing checks into a resize() function, pop()
+    would be constant, meaning that clear() would be linear because it 
+    increases in time complexity linearly as more elements are added. 
