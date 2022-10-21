@@ -1,7 +1,7 @@
-OBJS	= main.o
-SOURCE	= main.cpp
+OBJS	= in2post.o
+SOURCE	= in2post.cpp
 HEADER	= Stack.h Stack.hpp
-OUT	= a.out
+OUT	= in2post.x
 CC	 = g++
 FLAGS	 = -g -c -Wall
 LFLAGS	 = 
@@ -9,10 +9,9 @@ LFLAGS	 =
 all: $(OBJS)
 	$(CC) -g $(OBJS) -o $(OUT) $(LFLAGS)
 
-main.o: main.cpp
-	$(CC) $(FLAGS) main.cpp 
+in2post.o: in2post.cpp
+	$(CC) $(FLAGS) in2post.cpp 
 
 
 clean:
 	rm -f $(OBJS) $(OUT)
-
