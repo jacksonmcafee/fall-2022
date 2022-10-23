@@ -9,4 +9,4 @@ COP4530 - Data Structures and Algorithm Analysis
 
 there's a template warning out there somewhere but it basically goes:
 if you're an FSU student taking any of these classes, please don't yoink
-my code or else we're both going to have a bit of a problem!
+my code or else one or both of us is getting in trouble...

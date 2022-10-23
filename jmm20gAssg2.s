@@ -6,6 +6,9 @@
 .data 
 arr:        .space 20       # 20 bytes for 5 words
 
+f_nums:     .float 5.00000000
+f4:         .float 4.00000000
+
 prompt1:    .asciiz "Enter 5 integer numbers: \n"   
 prompt2:    .asciiz "Enter another number: \n"     
 prompt3:    .asciiz "Floating Point List \n"
@@ -83,34 +86,35 @@ post_sum:
     li $v0, 4
     syscall                 # prints printsum message
 
+    mov.s $f13, $f20        # saves copy of sum
+
     li $v0, 2
     mov.s $f12, $f20
     syscall                 # prints sum
 
     li $a2, 0               # resets $a2 to 0
-    mtc1 $zero, $f20        # reset $f20 to zero
+    lwc1 $f20, arr($a2)     # set $f20 to first arr val
     
     j min_loop
 
 # finds min value
 min_loop:
 
+    beq $a2, 20, found_min      # if $a2 == 20, loop has been exhausted
+
     lwc1 $f12, arr($a2)         # load array val to $f12
+
+    addi $a2, $a2, 4            # increment counter
 
     c.lt.s $f12, $f20           # compare $f12 to $f20 (current min)
                                 
-    bc1f next                   # move to next if current val is greater than current min
-
-    mov.s $f12, $f20            # move current val to $f20, new min
-
-    addi $a2, $a2, 4            # increment counter
-    beq $a2, 20, found_min      # if $a2 == 20, loop has been exhausted
+    bc1t next                   # move to next if current val is greater than current min
 
     j min_loop                  # loop to self
 
 next: 
 
-    addi $a2, $a2, 4
+    mov.s $f20, $f12
     j min_loop 
 
 found_min:
@@ -119,11 +123,97 @@ found_min:
     li $v0, 4
     syscall
     
-    mov.s $f20, $f12
+    mov.s $f12, $f20
     li $v0, 2
     syscall
 
-    j done
+    li $a2, 0               # resets $a2 to 0
+    lwc1 $f20, arr($a2)     # set $f20 to first arr val
+
+    j max_loop
+
+max_loop:
+    
+    beq $a2, 20, found_max      # if $a2 == 20, loop has been exhausted
+
+    lwc1 $f12, arr($a2)         # load array val to $f12
+
+    addi $a2, $a2, 4            # increment counter
+
+    c.lt.s $f20, $f12           # compare $f20 to $f12 (current max)
+                                
+    bc1t next1                  # move to next if current val is less than current max
+
+    j max_loop                  # loop to self
+
+next1: 
+
+    mov.s $f20, $f12
+    j max_loop 
+
+found_max:
+
+    la $a0, printmax
+    li $v0, 4
+    syscall                 # prints max message
+    
+    mov.s $f12, $f20
+    li $v0, 2
+    syscall                 # prints max
+
+    li $a2, 0               # resets $a2 to 0
+    lwc1 $f20, arr($a2)     # set $f20 to first arr val
+
+    j mean
+
+mean:
+
+    la $a0, printavg
+    li $v0, 4
+    syscall                 # prints mean message
+
+    li $v0, 2
+
+    lwc1 $f14, f_nums
+    div.s $f12, $f13, $f14  # divides sum / 5 and returns to $f12
+    mov.s $f14, $f12        # saves copy of mean to $f14
+    
+    syscall
+
+    li $a2, 0
+    lwc1 $f20, arr($a2)     # $f20 is arr val
+                            # $f14 is mean
+    mtc1 $zero, $f13
+
+    j calc_var1 
+
+calc_var1:
+
+    beq $a2, 20, calc_var2  # move to calc_var2 if 5 iterations
+
+    lwc1 $f12, arr($a2)     # load word to $f12 for printing
+    sub.s $f12, $f12, $f14  # subtract and store res in $f12
+
+    mul.s $f12, $f12, $f12  # square difference
+
+    add.s $f13, $f12, $f13  # add squared diff to sum
+
+    add $a2, $a2, 4         # increment $a2 for one iteration
+
+    j calc_var1            # loop again
+
+calc_var2:
+
+    la $a0, printvar
+    li $v0, 4
+    syscall
+
+    lwc1 $f20, f4           # load 4 to $f20
+    div.s $f12, $f13, $f20
+
+    li $v0, 2
+    syscall
+
 
 done: 
     
