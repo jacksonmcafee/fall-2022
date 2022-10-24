@@ -12,6 +12,5 @@ all: $(OBJS)
 in2post.o: in2post.cpp
 	$(CC) $(FLAGS) in2post.cpp 
 
-
 clean:
 	rm -f $(OBJS) $(OUT)

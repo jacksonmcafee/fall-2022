@@ -1,6 +1,8 @@
 #include "Stack.h"
 #include <iostream>
 #include <sstream>
+#include <algorithm>
+#include <cctype>
 
 using namespace cop4530;
 
@@ -9,31 +11,53 @@ std::string inToPost(std::string s);
 
 int evaluateExpression(std::string s);
 bool balancedParens(std::string s);
-int isOperator(char c);
-int isInteger(char c);
+bool isOperator(char c);
+bool isInteger(char c);
 int operation(int a, int b, char op);
 
 int main() {
   // declare input string and get it from user
-  std::string input;
+  TOP:
+  std::string s;
   std::cout << "Enter your expression: ";
-  std::getline(std::cin, input);
+  std::getline(std::cin, s);
 
-  if (!balancedParens(input)) {
+  s.erase(remove(s.begin(), s.end(), ' '), s.end());
+
+  
+  if (!balancedParens(s)) {
     std::cout << "Unbalanced parentheses, this expression cannot be solved."
               << std::endl;
     return 1;
   }
 
   // overwrite input as postfix notation
-  input = inToPost(input);
+  s = inToPost(s);
 
-  // pass input to evalExpress and return solved value
-  int val = evaluateExpression(input);
+  // pass input to evalExpress() and return solved value
+  int val = evaluateExpression(s);
+
+  switch (val) {
+    case -1:
+      std::cout << s << " cannot be solved. -1" << std::endl;
+      goto TOP;
+    case -2:
+      std::cout << s << " cannot be solved. -2" << std::endl;
+      goto TOP;
+    case -3:
+      std::cout << s << " cannot be solved. -3" << std::endl;
+      goto TOP;
+  }
+  
+  if(val == -1) {
+    
+  }
 
   // print expression
-  std::cout << input << " = " << val << std::endl;
+  std::cout << s << " = " << val << std::endl;
 
+  goto TOP;
+  
   return 0;
 }
 
@@ -54,20 +78,16 @@ std::string inToPost(std::string s) {
   for (int i = 0; i < s.length(); i++) {
     char c = s[i];
 
-    // If the scanned character is
-    // an operand, add it to output string.
+    // if operand, add to result
     if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') ||
         (c >= '0' && c <= '9'))
       result += c;
 
-    // If the scanned character is an
-    // ‘(‘, push it to the stack.
+    // if '(', push to stack
     else if (c == '(')
       stack.push('(');
 
-    // If the scanned character is an ‘)’,
-    // pop and to output string from the stack
-    // until an ‘(‘ is encountered.
+    // if ‘)’, pop and then add eacch one to result until ‘(‘
     else if (c == ')') {
       while (stack.top() != '(') {
         result += stack.top();
@@ -76,7 +96,7 @@ std::string inToPost(std::string s) {
       stack.pop();
     }
 
-    // If an operator is scanned
+    // if operator, check precedence and add to result
     else {
       while (!stack.empty() && precedence(s[i]) <= precedence(stack.top())) {
         result += stack.top();
@@ -86,13 +106,12 @@ std::string inToPost(std::string s) {
     }
   }
 
-  // Pop all the remaining elements from the stack
+  // pop everything from the stack
   while (!stack.empty()) {
     result += stack.top();
     stack.pop();
   }
-
-  std::cout << result << std::endl;
+  return result;
 }
 
 bool balancedParens(std::string s) {
@@ -100,8 +119,12 @@ bool balancedParens(std::string s) {
   bool noParens = true;
   int i = 0;
 
+  if (s.size() == 0) {
+    return true;
+  }
+
   for (int i = 0; i < s.length(); i++) {
-    if (s[i] == '(') {
+    if (s[i] == '(' || s[i] == ')') {
       noParens = false;
     }
   }
@@ -109,23 +132,20 @@ bool balancedParens(std::string s) {
   if (noParens) {
     return true;
   }
-
-  if (s.size() == 0) {
-    return true;
-  }
-
-  while (i < s.size()) {
-
-    if (s[i] == '(') {
-      stack.push(s[i]);
+  
+  for (char c : s) {
+    if (c == '(') {
+      stack.push(c);
     }
-
-    else if ((s[i] == ')' && !stack.empty() && stack.top() == '(')) {
+    else if ((c == ')' && !stack.empty() && stack.top() == '(')) {
       stack.pop();
-    } else {
+    } 
+    else if (isalnum(c) || c == '+' || c == '-' || c == '/' || c == '*') {
+      continue;
+    }
+    else {
       return false;
     }
-    i++;
   }
 
   if (stack.empty()) {
@@ -134,47 +154,47 @@ bool balancedParens(std::string s) {
   return false;
 }
 
-// takes postfix notation and determines an answer
 int evaluateExpression(std::string s) {
-  int a, b;
-  Stack<int> stack;
-  std::string::iterator it;
-  for (it = s.begin(); it != s.end(); it++) {
-    // read elements and perform postfix evaluation
-    if (isOperator(*it) != -1) {
-      a = stack.top();
-      stack.pop();
-      b = stack.top();
-      stack.pop();
-      stack.push(operation(a, b, *it));
-    } else if (isInteger(*it) > 0) {
-      stack.push(*it - 48);
+  // create stack
+    Stack<int> stack;
+ 
+    // loop our expression
+    for (char c: s)
+    {
+        // push ints to stack
+        if (c >= '0' && c <= '9') {
+            stack.push(c - '0');
+        }
+        else if (isalpha(c)) {
+          return -1;
+        }
+        
+        else if (c == '+' || c == '-' || c == '*' || c == '/') {
+          
+            // pop top 2 ints and store them
+            // check if top is another operator
+            int x = stack.top();
+            stack.pop();
+
+            int y = stack.top();
+            stack.pop();
+          
+            // take char and perform that operation
+            if (c == '+') {
+                stack.push(y + x);
+            }
+            else if (c == '-') {
+                stack.push(y - x);
+            }
+            else if (c == '*') {
+                stack.push(y * x);
+            }
+            else if (c == '/') {
+                stack.push(y / x);
+            }
+        }
     }
-  }
-  return stack.top();
-}
-
-int isOperator(char c) {
-  if (c == '+' || c == '-' || c == '*' || c == '/' || c == '^')
-    return 1; // character is an operator
-  return -1;  // not an operator
-}
-
-int isInteger(char c) {
-  if (c >= '0' && c <= '9')
-    return 1; // character is an operand
-  return -1;  // not an operand
-}
-
-int operation(int a, int b, char op) {
-  // Perform operation
-  if (op == '+')
-    return b + a;
-  else if (op == '-')
-    return b - a;
-  else if (op == '*')
-    return b * a;
-  else if (op == '/')
-    return b / a;
-  return -1;
+  
+    // return last value on stack
+    return stack.top();
 }

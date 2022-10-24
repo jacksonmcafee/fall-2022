@@ -51,7 +51,6 @@ Stack<T>::Stack(Stack && s) {
 template <typename T>
 Stack<T>::~Stack() {
 	delete[] _stack;
-	thesize = 0;
 }
 
 template <typename T>
@@ -102,6 +101,7 @@ template <typename T>
 // replace top element of stack with x
 void Stack<T>::push(T && x) {
 	_stack[thesize] = x;
+  thesize++;
 }
 
 template <typename T>
@@ -132,14 +132,14 @@ void Stack<T>::pop() {
 
 template <typename T>
 T& Stack<T>::top() {
-	if (thesize != 0) { return *_stack[thesize - 1]; }
+	if (thesize != 0) { return _stack[thesize - 1]; }
 	else { return dummy; }
 }
 
 // could fail...
 template <typename T>
 const T& Stack<T>::top() const {
-	if (thesize != 0) { return *_stack[thesize - 1]; }
+	if (thesize != 0) { return &_stack[thesize - 1]; }
 	else { return dummy; }
 }
 
