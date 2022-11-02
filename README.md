@@ -6,7 +6,3 @@ CAP4613 - Deep Learning & Reinforcement Learning Fundamentals
 CDA3100 - Comp. Organization I
 COP3532 - Adv. Programming w/ Java
 COP4530 - Data Structures and Algorithm Analysis
-
-there's a template warning out there somewhere but it basically goes:
-if you're an FSU student taking any of these classes, please don't yoink
-my code or else one or both of us is getting in trouble...
