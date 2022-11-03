@@ -3,46 +3,53 @@
 
 #include <string>
 
-class BET {
-    public:
+namespace cop4530 {
 
-        // declare & define BinaryNode struct
-        struct BinaryNode {
-            std::string element;
-            BinaryNode* left;
-            BinaryNode* right;
+    template <typename T>
+    class BET {
+        public:
+
+            // declare & define BinaryNode struct
+            struct BinaryNode {
+                T element;
+                BinaryNode* left;
+                BinaryNode* right;
+                
+                // constructor
+                BinaryNode(const T& e =  T{}, BinaryNode *l = nullptr, BinaryNode *r = nullptr) : element{e}, left{l}, right{r} {}
+            };
+
+            // declare constructors and destructor
+            BET();
+            BET(const string& postfix);
+            BET(const BET& tree);
+            ~BET();
+
+            // declare class functions 
+            bool buildFromPostfix(const string& postfix);
+            const BET& operator=(const BET &);
+            void printInfixExpression();
+            void printPostfixExpression();
             
-            // constructor
-            BinaryNode(const string& e =  string{}, BinaryNode *l = nullptr, BinaryNode *r = nullptr) : element{e}, left{l}, right{r} {}
-        };
+            // declare getter functions
+            size_t size();
+            size_t leaf_nodes();
+            bool empty();
 
-        // declare constructors and destructor
-        BET();
-        BET(const string& postfix);
-        BET(const BET&);
-        ~BET();
+        private:
+            // declare helper functions
+            void printInfixExpression(BinaryNode *n);
+            void makeEmpty(BinaryNode* &t);
+            BinaryNode* clone(BinaryNode *t);
+            void printPostfixExpression(BinaryNode *n);
 
-        // declare class functions 
-        bool buildFromPostfix(const string& postfix);
-        const BET& operator=(const BET &);
-        void printInfixExpression();
-        void printPostfixExpression();
-        
-        // declare getter functions
-        size_t size();
-        size_t leaf_nodes();
-        bool empty();
+            size_t size(BinaryNode *t);
+            size_t leaf_nodes(BinaryNode *t);
 
-    private:
-        // declare helper functions
-        void printInfixExpression(BinaryNode *n);
-        void makeEmpty(BinaryNode* &t);
-        BinaryNode* clone(BinaryNode *t);
-        void printPostfixExpression(BinaryNode *n);
+            // stores pointer to tree root
+            BinaryNode* root;
 
-        size_t size(BinaryNode *t);
-        size_t leaf_nodes(BinaryNode *t);
-
+    }
 }
 
 #include "BET.hpp"
