@@ -15,6 +15,8 @@ matB:  .space 144
 matC:  .space 144
 
 error:   .asciiz "\nError! The size of the matrix must be between 2 and 6. \n"
+space:   .asciiz " "
+newline: .asciiz "\n"
 
 prompt1: .asciiz "Welcome to the Matrix Kultiplier NEO \n"
 prompt2: .asciiz "Please enter in the size of the matrix 2-6: "
@@ -77,6 +79,16 @@ get_matA:
     j populate_matA     # return to calling function
 
 pre_pop_matB:
+    la $a0, printmatA
+    li $v0, 4
+    syscall
+
+    move $t2, $zero     # reset iteration counters
+    move $t3, $zero     # reset line break counter
+    addi $t3, $t3, 1    
+    
+    la $a1, matA        # print matB
+    jal print
 
     move $t2, $zero                 # zero out $t2 register to serve as counter 
 
@@ -104,7 +116,53 @@ get_matB:
     j populate_matB     # return to calling function
 
 post_pop:
+    la $a0, printmatB
+    li $v0, 4
+    syscall
+
+    move $t2, $zero     # reset iteration counters
+    move $t3, $zero     # reset line break counter
+    addi $t3, $t3, 1    
+
+    la $a1, matB        # print matB
+    jal print
+
+    # prep for multiplication 
+    
+    # THIS IS TEMP
+
+    la $a0, printmatC
+    li $v0, 4
+    syscall
+
     j exit
+
+print:
+    lw $a0, $t2($a1)
+    li $v0, 1
+    syscall             # print value from matrix
+
+    la $a0, space 
+    li $v0, 4
+    syscall             # print space for formatting
+    
+    beq $t3, $t0, linebreak         # chcek if enough iterations have happened for a linebreak
+    addi $t3, $t3, 1                # increment $t3
+
+    beq $t2, $t1, post_print        # check if $t2 (iterator) > $t1 (size count)
+    addi $t2, $t2, 4                # increment iterator by 4 (bytes)
+
+    j print
+
+linebreak:
+    la $a0, newline
+    li $v0, 4
+    syscall                # print newline
+
+    move $t3, $zero        # reset linebreak counter
+
+post_print:
+    jr $ra          # return to jal print call
 
 err:
     la $a0, error       
