@@ -3,8 +3,9 @@
 #include <sstream>
 #include <stack>
 
-#include "BET.h"
+#include "bet.h"
 
+/* Functions for Expression Comp */
 bool isOperator(std::string s);
 bool isOperand(std::string s);
 int precedence(std::string s);
@@ -65,28 +66,35 @@ bool BET<T>::buildFromPostfix(const std::string& postfix) {
         // create node
         BinaryNode* node = new BinaryNode(token);
 
+		// if operand, push node to stack
         if (isOperand(token)) {
             t_stack.push(node);
         }
+		// if operator AND stack doesn't have 2 operands, fail and return false
         else if (isOperator(token) && t_stack.size() < 2) {
             std::cout << "Postfix expression is invalid." << std::endl;
             root = nullptr;
             return false;
         }
         else {
+			// push top stack node left and pop it
             node->left = t_stack.top();
             t_stack.pop();
+			// push top stack node right and pop it
             node->right = t_stack.top();
             t_stack.pop();
+			// push current node
             t_stack.push(node);
         }
     }
 
+	// if there is 1 remaining node, make it tree root
     if ((t_stack.size() == 1)){
         root = t_stack.top();
         t_stack.pop();
     }
     else {
+		// if more/less than one node exist, throw and return false
         std::cout << "Postfix expression is invalid." << std::endl;
         return false;
     }
@@ -98,6 +106,7 @@ template <typename T>
 // copy operator
 const BET<T>& BET<T>::operator=(const BET& tree) {
     // clear base tree, clone other tree
+	// could have if (empty()) but you might as well clear it anyways
     makeEmpty(root);
     root = clone(tree.root);
     return *this;
@@ -105,14 +114,16 @@ const BET<T>& BET<T>::operator=(const BET& tree) {
 
 template <typename T>
 void BET<T>::printInfixExpression() {
-  printInfixExpression(root);
-  std::cout << std::endl;
+	// run recursive infix print on root
+    printInfixExpression(root);
+    std::cout << std::endl;
 }
 
 template <typename T>
 void BET<T>::printPostfixExpression() {
-  printPostfixExpression(root);
-  std::cout << std::endl;
+	// run recursive postfix print on rot
+    printPostfixExpression(root);
+    std::cout << std::endl;
 }
 
 /* Getter Functions */
@@ -129,6 +140,7 @@ size_t BET<T>::leaf_nodes() {
 }
 
 template <typename T>
+// if no root, tree is empty
 bool BET<T>::empty() {
     if (root == nullptr) {
         return false;
@@ -152,6 +164,7 @@ void BET<T>::printInfixExpression(BinaryNode *n) {
     }
     else {
         // check to see if parenthesis are needed
+		// this code concept was sourced from Baeldung, implemented myself
         if (isOperator(n->element) && isOperator(n->right->element)) {
             if (precedence(n->element) >= precedence(n->right->element)) {
                 if (precedence(n->element) == 1) {
@@ -174,6 +187,7 @@ void BET<T>::printInfixExpression(BinaryNode *n) {
         std::cout << n->element << " ";
 
         // check to see if parenthesis are needed
+		// same as above, just swapped for left
         if (isOperator(n->element) && isOperator(n->left->element)) {
             if (precedence(n->element) >= precedence(n->left->element)) {
                 if (precedence(n->element) == 1) {
@@ -251,17 +265,20 @@ template <typename T>
 // recursively count leaves
 size_t BET<T>::leaf_nodes(BinaryNode *t) {
     if (t != nullptr) {
+		// if no nodes left or right, this node is a leaf
         if ((t->left == nullptr) && (t->right == nullptr)) {
             return 1;
         }
         else {
+			// if more nodes left or right, this node isn't a leaf
             return leaf_nodes(t->left) + leaf_nodes(t->right);
         }
     }
+	// nullptr passed, so no leaves
     return 0;
 }
 
-// check if passed string is an operator
+// check if passed string is an operator, same as in asgn4
 bool isOperator(std::string s) {
     if (s == "*" || s == "/" || s == "+" || s == "-") {
         return true;
@@ -269,7 +286,7 @@ bool isOperator(std::string s) {
     return false;
 }
 
-// check if passed string is an operand
+// check if passed string is an operand, same as in asgn4
 bool isOperand(std::string s){
     for (char ch : s) {
         if (isalnum(ch)) {
@@ -279,7 +296,7 @@ bool isOperand(std::string s){
     return false;
 }
 
-// check precedence of passed string
+// check precedence of passed string, same as in asgn4
 int precedence(std::string s) {
     if (s == "(" || s == ")") {
         return 2;

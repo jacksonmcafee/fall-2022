@@ -48,6 +48,6 @@ private:
   BinaryNode *root;
 };
 
-#include "BET.hpp"
+#include "bet.hpp"
 
 #endif
