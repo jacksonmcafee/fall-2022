@@ -15,6 +15,8 @@ public class DesktopFrame extends JFrame implements ActionListener {
 
     // DesktopFrame constructor
     public DesktopFrame() {
+      super("Desktop Frame");
+
       desktop = new JDesktopPane();     // create JDP
       setContentPane(desktop);          // set desktop as current ContentPane
       setJMenuBar(createMenuBar());     // create & set menu bar
