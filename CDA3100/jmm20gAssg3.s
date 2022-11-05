@@ -82,7 +82,7 @@ get_mat:
 	    li $v0, 5 
 	    syscall             # get int input from user 
 
-	    sw $v0, 0($a1)       # save input word into matrix at ($a0)
+	    sw $v0, 0($a1)      # save input word into matrix at ($a0)
 
 	    jr $ra 			    # return to calling function
 
@@ -164,15 +164,15 @@ post_pop:
 	    li $v0, 4
 	    syscall
 
-	    addi $t2, $zero, 4  # set $t2 register to serve as counter 
+	    addi $t2, $zero, 4  	# set $t2 register to serve as counter 
 
-	    move $t3, $zero     # reset line break counter
+	    move $t3, $zero    		# reset line break counter
 	    addi $t3, $t3, 1    
 	    
-	    la $a1, matB        # print matB
+	    la $a1, matB        	# print matB
 	    jal print
 
-	    nop 				# wait for jal
+	    nop 					# wait for jal
 
 	    j pre_mult
 
@@ -182,15 +182,15 @@ return_val:
 		# return mat[r][c] in $v0
 
 		mul $t9, $t0, $a1
-		mul $t9, $t9, 4  	# adjust row by 4 bytes
+		mul $t9, $t9, 4  		# adjust row by 4 bytes
 		add $a0, $a0, $t9
 
-		mul $t9, $a2, 4 	# adjust col by 4 bytes
+		mul $t9, $a2, 4 		# adjust col by 4 bytes
 		add $a0, $a0, $t9 	
 
-		lw $v0, ($a0)		# load word to return location
+		lw $v0, ($a0)			# load word to return location
 
-		jr $ra      		# return value
+		jr $ra      			# return value
 
 update_val:
 		# when passed $a0 = mat, $a1 = row, $a2 = col, $a3 = val
@@ -198,75 +198,78 @@ update_val:
 		# run mat[r][c] = val
 
 		mul $t9, $t0, $a1
-		mul $t9, $t9, 4  	# adjust row by 4 bytes
+		mul $t9, $t9, 4  		# adjust row by 4 bytes
 		add $a0, $a0, $t9
 
-		mul $t9, $a2, 4 	# adjust col by 4 bytes
+		mul $t9, $a2, 4 		# adjust col by 4 bytes
 		add $a0, $a0, $t9 	
 
-		sw $a3, ($a0) 		# save val to matrix
+		sw $a3, ($a0) 			# save val to matrix
 
 		jr $ra
 
 pre_mult:
-	   la $a2, matB  		# load address of matA
-	   la $a1, matA  		# load address of matB
-	   la $a0, matC  		# load address of matC
-	   jal matmul		    # call mult function
+	   la $a2, matB  			# load address of matA
+	   la $a1, matA  			# load address of matB
+	   la $a0, matC  			# load address of matC
+	   jal matmul		    	# call mult function
 
 matmul:
 		# Ref. Code provided in asgn details. Probably would've never finished w/o it. 
 		# Wrote a MORE inefficient version before remembering it was literally at the top.
       	
-      	move $t9, $t0  		# store dims in $t9 
+      	move $t9, $t0  			# store dims in $t9 
 
     	move $t4, $zero
       	move $t5, $zero
-      	addi $t6, $zero, 2 	# set values for iteration
+      	addi $t6, $zero, 2 		# set values for iteration
 
 
-	    li $s0, 0   # zero out first loop counter
-L1:     li $s1, 0   # zero out second loop counter, mark beginning of first loop
-L2:     li $s2, 0   # zero out third loop counter, mark beginning of second loop
+	    li $s0, 0   			# zero out first loop counter
 
-        mul $t4, $s0, $t9 		# $t4 = i * 2^5 (size of row of c)
+L1:     li $s1, 0   			# zero out second loop counter, mark beginning of first loop
 
-        add $t4, $t4, $s1	    # $t4 = i * size(row) + j
-        sll $t4, $t4, 3         # $t4 = byte offset of [i][j]
+L2:     li $s2, 0   			# zero out third loop counter, mark beginning of second loop
+
+        mul $t4, $s0, $t9
+
+        add $t4, $t4, $s1	    # resize by bytes
+        sll $t4, $t4, 3         # set mat offset
 
         div $t4, $t4, $t6
 
 	    add $t4, $a0, $t4    	# increment mat address
-	    lw $s4, 0($t4)      	# $f4 = 8 bytes of c[i][j]
+	    lw $s4, 0($t4)      	# load word from new address
 
 L3:     mul $t5, $s2, $t9     	# mark beginning of third loop
-        add $t5, $t5, $s1  		# $t5 = k * size(row) + j
-	    sll $t5, $t5, 3     	# $t5 = byte offset of [k][j] 
+
+        add $t5, $t5, $s1  		# resize by bytes
+	    sll $t5, $t5, 3     	# set mat offset 
 
 	    div $t5, $t5, $t6
 
-	    add $t5, $a2, $t5  		# $t5 = byte address of b[k][j] 
-	    lw $s6, 0($t5)    		# $f16 = 8 bytes of b[k][j]
+	    add $t5, $a2, $t5  		# location of matB[k][j] 
+	    lw $s6, 0($t5)    		# load word from new address
 
-	    mul $t5, $s0, $t9 		# $t5=i*25 (sizeofrowofa) 
-	    add $t5, $t5, $s2 		# $t5 = i * size(row) + k
-	    sll $t5, $t5, 3 		# $t5 = byte offset of [i][k] 
+	    mul $t5, $s0, $t9 		# resize
+	    add $t5, $t5, $s2 		# increment mat address
+	    sll $t5, $t5, 3 		# set mat offset 
 
 	    div $t5, $t5, $t6
-	    add $t5, $a1, $t5 		# $t5 = byte address of a[i][k] 
-	    lw $s7, 0($t5) 		    # $f18 = 8 bytes of a[i][k]
+	    add $t5, $a1, $t5 		# location of mat A[i][k] 
+	    lw $s7, 0($t5) 		    # load word from address
 
-	    mul $s6, $s7, $s6 		# $f16 = a[i][k] * b[k][j] 
-	    add $s4, $s4, $s6 		# f4 = c[i][j] + a[i][k] * b[k][j]
+	    mul $s6, $s7, $s6 		# multiply and prep val in matC 
+	    add $s4, $s4, $s6
 
-	    addi $s2, $s2, 1   	    # $k = k + 1
-	    bne $s2, $t9, L3  		# if (k != 32) go to L3
-	    sw $s4, 0($t4)   		# c[i][j] = $f4
+	    addi $s2, $s2, 1   	    # increment
+	    bne $s2, $t9, L3  		# shift to loop if needed
+	    sw $s4, 0($t4)   		# store word in matC
 
-	    addi  $s1, $s1, 1   	# $j = j + 1
-	    bne $s1, $t9, L2  		# if (j != 32) go to L2
-	    addi $s0, $s0, 1  	 	# $i = i + 1
-	    bne $s0, $t9, L1  		# if (i != 32) go to L1
+	    addi  $s1, $s1, 1   	# increment
+	    bne $s1, $t9, L2  		# shift to loop if needed
+	    addi $s0, $s0, 1  	 	# increment
+	    bne $s0, $t9, L1  		# shift to loop if needed 
 
 	j post_mult               	# multiplication done
 
@@ -274,24 +277,24 @@ post_mult:
 
 	la $a0, printmatC
     li $v0, 4
-    syscall				# print matrix C message
+    syscall					# print matrix C message
 
-    addi $t2, $zero, 4  # set $t2 register to serve as counter 
+    addi $t2, $zero, 4  	# set $t2 register to serve as counter 
 
-    move $t3, $zero     # reset line break counter
+    move $t3, $zero     	# reset line break counter
     addi $t3, $t3, 1    
     
-    la $a1, matC        # print matC
+    la $a1, matC        	# print matC
     jal print
 
-    nop 				# wait for jal
+    nop 					# wait for jal
 
-    j exit 				# end program
+    j exit 					# end program
 
 exit:
     la $a0, prompt4
     li $v0, 4
-    syscall 			# print goodbye message
+    syscall 				# print goodbye message
 
     li $v0, 10
-    syscall 			# exit program
+    syscall 				# exit program
