@@ -1,4 +1,4 @@
-import projectPack.*;
+import projPack.*;
 
 public class Card {
     public SuitEnum suit;

@@ -1,7 +1,7 @@
 import java.util.Collections;
 import java.util.ArrayList;
 import java.util.Arrays;
-import projectPack.*;
+import projPack.*;
 
 public class Deck {
     private ArrayList<Card> deck;

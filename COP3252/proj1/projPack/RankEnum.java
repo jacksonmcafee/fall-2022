@@ -1,3 +1,5 @@
+package projPack;
+
 public enum RankEnum {
     Ace,
     Two,
@@ -11,5 +13,6 @@ public enum RankEnum {
     Ten,
     Jack,
     Queen,
-    King;
+    King,
+    Null;
 }
