@@ -3,22 +3,22 @@ import projPack.*;
 public class Card {
     public SuitEnum suit;
     public RankEnum rank;
-    public boolean isVisible; 
+    public boolean faceUp; 
 
     public Card(SuitEnum suit, RankEnum rank) {
         // assign suit and rank val to card
         this.suit = suit;
         this.rank = rank;
 
-        isVisible = false;
+        faceUp = false;
     }
 
-    public Card(SuitEnum suit, RankEnum rank, boolean visible) {
+    public Card(SuitEnum suit, RankEnum rank, boolean faceUp) {
         // assign suit and rank val to card
         this.suit = suit;
         this.rank = rank;
             
-        isVisible = visible;
+        this.faceUp = faceUp;
     }
 
     public SuitEnum getSuit() {
@@ -32,7 +32,7 @@ public class Card {
         return rank.name() + " of " + suit.name();
     }
 
-    public void setVisible(boolean visible) {
-        this.isVisible = visible;
+    public void setFaceUp(boolean faceUp) {
+        this.faceUp = faceUp;
     }
 }
