@@ -1,3 +1,9 @@
+/*
+Jackson McAfee, 2022-11-17
+StudentHandler.java for COP3252 Asgn6
+*/
+
+// import statements
 import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.Scanner;
@@ -6,7 +12,6 @@ import java.util.Comparator;
 import java.io.*;
 
 public class StudentHandler {
-    // data 
     ArrayList<Student> students;
 
     // array of string to make printing clearer
@@ -19,18 +24,27 @@ public class StudentHandler {
                 };
 
     // main function
-    public static void main(String[] args) throws IOException, ClassNotFoundException {
+    public static void main(String[] args) throws IOException, ClassNotFoundException, NumberFormatException {
         // initialize StudentHandler sh
         StudentHandler sh = new StudentHandler();
 
         // create scanner to pass to various functions
         Scanner s = new Scanner(System.in);
 
+        // declare input for sh
+        int input = 0;
+
         // indefinite loop until 6 is input
         while(true) {
-            System.out.printf("%s %s %s %s %s %s", opt[0], opt[1], opt[2], opt[3], opt[4], opt[5]);
+            System.out.printf("%s%s%s%s%s%s", opt[0], opt[1], opt[2], opt[3], opt[4], opt[5]);
+            System.out.print("Please input the number of your choice: ");
             try {
-                int input = s.nextInt();
+                String s_input = s.nextLine();
+                input = Integer.parseInt(s_input);
+                
+                // format and flush
+                System.out.println();
+
                 if (input > 6 || input < 1) {
                     // if input is out of range, skip
                     System.out.println("Invalid choice, try again!");
@@ -59,8 +73,10 @@ public class StudentHandler {
 
                 }
             }
-            catch (InputMismatchException e) {
+            catch (NumberFormatException e) {
+                System.out.println("Error thrown.");
                 System.out.println("Invalid choice, try again!");
+                input = 0;
             }
         }
     }
@@ -85,11 +101,11 @@ public class StudentHandler {
             // write to file, close stream and return to menu
             outstream.writeObject(students);
             outstream.close();
-            System.out.println("Object serialized successfully.");
+            System.out.printf("Object serialized successfully.%n%n");
         }
         // catch IOException, exit to menu
         catch (IOException e) {
-            System.out.printf("Issue saving file. Returning to main menu\n.");
+            System.out.printf("Issue saving file. Returning to main menu%n%n.");
         }
     }
 
@@ -108,13 +124,20 @@ public class StudentHandler {
 
             // load from file, close stream and return to menu
             students = (ArrayList<Student>) instream.readObject();
+
+            // recalculate grades for each student to populate grade
+            for (Student st : students) {
+                st.calcGrade();
+                st.incrementStudentCount();
+            }
+
             instream.close();
-            System.out.println("Object deserialized successfully.");
+            System.out.printf("Object deserialized successfully.%n%n");
 
         }
         // catch IOException, exit to menu
         catch (IOException e) {
-            System.out.printf("Issue reading file. Returning to main menu.\n");
+            System.out.printf("Issue reading file. Returning to main menu.%n%n");
         }
         // catch ClassNotFoundException, exit to menu
         catch (ClassNotFoundException e) {
@@ -142,6 +165,7 @@ public class StudentHandler {
             for (char x : fna) {
                 if (Character.isDigit(x)) {
                     flag = true;
+                    System.out.println("Invalid input, please try inputting the student again.");
                 } 
             }
             if (flag == true) { continue; }
@@ -155,9 +179,13 @@ public class StudentHandler {
             for (char x : lna) {
                 if (Character.isDigit(x)) {
                     flag = true;
+                    System.out.println("Invalid input, please try inputting the student again.");
                 }
             }
             if (flag == true) { continue; }
+        
+            // reset flag
+            flag = false;
 
             // set student name
             newStudent.setname(fn, ln);
@@ -167,6 +195,10 @@ public class StudentHandler {
             int flip = 0;
             double grade = 0;
             while(innerFlag) {
+                if (flag == true) {
+                    System.out.println("Invalid input, please try inputting the student again.");
+                    break;
+                }
                 switch (flip) {
                     case 0:
                         System.out.println("Please input student homework grades one at a time (negative value to finish): ");
@@ -176,14 +208,17 @@ public class StudentHandler {
                                 newStudent.addHW(grade);
                                 flip++;
                             }
+                            else if (grade < 0) {
+                                innerFlag = false;
+                                break;
+                            }
                             else {
-
+                                flag = true;
                             }
                         }
                         catch (InputMismatchException e) {
                             System.out.println("Invalid input, please try inputting the student again.");
                         }
-                        innerFlag = false;
                         break;
 
                     case 1:
@@ -194,31 +229,45 @@ public class StudentHandler {
                                 newStudent.addHW(grade);
                             }
                             else if (grade < 0) {
+                                innerFlag = false;
                                 break;
+                            }
+                            else {
+                                flag = true;
                             }
                         }
                         catch (InputMismatchException e) {
                             System.out.println("Invalid input, please try inputting the student again.");
+                            flag = true;
                         }
-                        innerFlag = false;
-                        break;
                 }
             }
-        if (innerFlag == false) { continue; }
+        if (flag == true) { continue; }
 
         // reset flag
         innerFlag = true;
         
         // get test grades 
         while(innerFlag) {
+                if (flag == true) {
+                    System.out.println("Invalid input, please try inputting the student again.");
+                    break;
+                }
                 switch (flip) {
                     case 0:
-                        System.out.println("Please input student homework grades one at a time (negative value to finish): ");
+                        System.out.println("Please input student test grades one at a time (negative value to finish): ");
                         try {
                             grade = s.nextDouble();
                             if (isValidGrade(grade)) {
                                 newStudent.addTest(grade);
                                 flip++;
+                            }
+                            else if (grade < 0) {
+                                innerFlag = false;
+                                break;
+                            }
+                            else {
+                                flag = true;
                             }
                         }
                         catch (InputMismatchException e) {
@@ -227,19 +276,34 @@ public class StudentHandler {
                         break;
 
                     case 1:
-                        System.out.println("Please add another homework grade (negative value to finish): ");
+                        System.out.println("Please add another test grade (negative value to finish): ");
                         try {
                             grade = s.nextDouble();
                             if (isValidGrade(grade)) {
                                 newStudent.addTest(grade);
                             }
+                            else if (grade < 0) {
+                                innerFlag = false;
+                                break;
+                            }
+                            else {
+                                flag = true;
+                            }
                         }
                         catch (InputMismatchException e) {
                             System.out.println("Invalid input, please try inputting the student again.");
+                            flag = true;
                         }
                 }
             }
+            if (flag == true) { continue; }
 
+            // if everything succeeds, add student to ArrayList students
+            students.add(newStudent);
+            
+            // flush scanner
+            s.nextLine();
+            System.out.println();
         }
     }
 
@@ -251,17 +315,29 @@ public class StudentHandler {
         for (Student s : students) {
             printStudent(s);
         }
-        System.out.printf("Printed %d student records.", )
+        // create temp student object to increment student count
+        Student s = new Student();
+        s.decrementStudentCount();
+        System.out.printf("Printed %d student records.%n%n", s.getNumStudents());
     }
 
+    // helper function to make the above function more concise
     private void printStudent(Student s) {
-        System.out.printf("First Name: %s%n", s.getFirst());
+        System.out.printf("%nFirst Name: %s%n", s.getFirst());
         System.out.printf("Last Name: %s%n", s.getLast());
         System.out.printf("Final Grade: %f%n%n", s.getGrade());
     }
 
+    // clears students with Collections.clear()
     private void clearAllStudents() {
+        // clear ArrayList students
         students.clear();
+
+        // create temp student object to reset student count
+        Student s = new Student();
+        s.resetStudentCount();
+
+        System.out.println("Clearing all students was successful.");
     }
 
     private boolean isValidGrade(double d) {
