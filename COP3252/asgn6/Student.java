@@ -18,6 +18,7 @@ public class Student implements Serializable {
     
     // added "transient" attribute to grade
     private transient double grade = 0; 		
+    
     private static int totalStudents = 0;
 
     // added SVUID
