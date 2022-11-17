@@ -4,16 +4,24 @@
 
 //You should be able to serialize the Student class after making changes to it
 
+// importing java.io
+import java.io.*;
 import java.util.ArrayList;
 
-public class Student { 
+// make class serializable 
+public class Student implements Serializable { 
 
-	//data
+	// data
     private ArrayList<Double> testGrades;
     private ArrayList<Double> hwGrades;
     private String fname, lname;
-    private double grade = 0;		
-    private static int totalStudents = 0;	
+    
+    // added "transient" attribute to grade
+    private transient double grade = 0; 		
+    private static int totalStudents = 0;
+
+    // added SVUID
+    private static final long serialVersionUID = 1L;
     
     //constructors
     public Student() {this("", "");}
