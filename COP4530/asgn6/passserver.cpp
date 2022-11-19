@@ -1,12 +1,15 @@
 #include "hashtable.h"
 #include "passserver.h"
+#include "base64.h"
 #include <cstddef>
 #include <cstring>
+
+const size_t MAXSIZE = 100;
 
 // PassServer constructor
 PassServer::PassServer(size_t size) {
     // create hashtable
-    passServer = HashTable<std::string, std::string>(size);
+    passServer = cop4530::HashTable<std::string, std::string>(size);
     size = 0;
 }
 
@@ -73,7 +76,8 @@ bool PassServer::write_to_file(const char* filename) {
 // encrypts password
 std::string PassServer::encrypt(const std::string& str) {
     size_t n = str.length();
-    char c_in[n + 1], c_out[n + 1];
+    BYTE c_in[MAXSIZE];
+    BYTE c_out[MAXSIZE]; 
     strcpy(c_in, str.c_str());
     base64_encode(c_in, c_out, n, 1);
     std::string s(c_out);

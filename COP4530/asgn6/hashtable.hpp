@@ -1,13 +1,10 @@
 #include "hashtable.h"
 
-// just to make functions appear less verbose
-using namespace cop4530;
-
 template <typename K, typename V>
 // default constructor
-HashTable<K,V>::HashTable(size_t size) {
+cop4530::HashTable<K,V>::HashTable(size_t size) {
   // set contained value counter size to zero
-  size = 0;
+  tSize = 0;
 
   // resize table using prime_below()
   table.resize(prime_below(size));
@@ -15,14 +12,14 @@ HashTable<K,V>::HashTable(size_t size) {
 
 template <typename K, typename V>
 // destructor
-HashTable<K,V>::~HashTable() {
+cop4530::HashTable<K,V>::~HashTable() {
   // call clear() to delete table contents 
   clear();
 }
 
 template <typename K, typename V>
 // check if key K is contained in table
-bool HashTable<K,V>::contains(const K& k) {
+bool cop4530::HashTable<K,V>::contains(const K& k) {
   // get list that contains k
   auto &list = table[myhash(k)];
   
@@ -41,7 +38,7 @@ bool HashTable<K,V>::contains(const K& k) {
 
 template <typename K, typename V>
 // check if key-value pair K,V is contained in table
-bool HashTable<K,V>::match(const std::pair<K, V> &kv) {
+bool cop4530::HashTable<K,V>::match(const std::pair<K, V> &kv) {
   // extremely similar to contains, just check for entire pair
   K k = kv.first;
   auto &list = table[myhash(k)];
@@ -61,7 +58,7 @@ bool HashTable<K,V>::match(const std::pair<K, V> &kv) {
 
 template <typename K, typename V>
 // insert key-value pair K,V if not currently within table
-bool HashTable<K,V>::insert(const std::pair<K, V> & kv) {
+bool cop4530::HashTable<K,V>::insert(const std::pair<K, V> & kv) {
   // verify that !match(kv)
   if (!match(kv)) {      
       // locate list preemptively, needed either way
@@ -70,7 +67,7 @@ bool HashTable<K,V>::insert(const std::pair<K, V> & kv) {
       // verify that !contains(k)
       if (!contains(kv.first)) {
         // if size+1 is greater than current size, rehash table
-        if (size++ > table.size()) {
+        if (tSize++ > table.size()) {
           rehash();
         }
 
@@ -86,7 +83,7 @@ bool HashTable<K,V>::insert(const std::pair<K, V> & kv) {
           }
         }
       }
-      size++;
+      tSize++;
       return true;
   }
   // kv already exists in table, return false
@@ -95,7 +92,7 @@ bool HashTable<K,V>::insert(const std::pair<K, V> & kv) {
 
 template <typename K, typename V>
 // move alternative to insert
-bool HashTable<K,V>::insert(std::pair<K, V> && kv) {
+bool cop4530::HashTable<K,V>::insert(std::pair<K, V> && kv) {
   // verify that !match(kv)
   if (!match(kv)) {      
       // locate list preemptively, needed either way
@@ -104,7 +101,7 @@ bool HashTable<K,V>::insert(std::pair<K, V> && kv) {
       // verify that !contains(k)
       if (!contains(kv.first)) {
         // if size+1 is greater than current size, rehash table
-        if (size++ > table.size()) {
+        if (tSize++ > table.size()) {
           rehash();
         }
 
@@ -120,7 +117,7 @@ bool HashTable<K,V>::insert(std::pair<K, V> && kv) {
           }
         }
       }
-      size++;
+      tSize++;
       return true;
   }
   // kv already exists in table, return false
@@ -129,7 +126,7 @@ bool HashTable<K,V>::insert(std::pair<K, V> && kv) {
 
 template <typename K, typename V>
 // remove key-value pair associated with k
-bool HashTable<K,V>::remove(const K& k) {
+bool cop4530::HashTable<K,V>::remove(const K& k) {
   // verify that contains(k)
   if (contains(k)) {
     // get list k is in
@@ -151,13 +148,13 @@ bool HashTable<K,V>::remove(const K& k) {
 
 template <typename K, typename V>
 // clear values contained in table
-void HashTable<K,V>::clear() {
+void cop4530::HashTable<K,V>::clear() {
   makeEmpty();
 }
 
 template <typename K, typename V>
 // load content from text file to hashtable
-bool HashTable<K,V>::load(const char* filename) {
+bool cop4530::HashTable<K,V>::load(const char* filename) {
   // create ifstream then open file filename
   std::ifstream file;
   file.open(filename);
@@ -185,9 +182,9 @@ bool HashTable<K,V>::load(const char* filename) {
 
 template <typename K, typename V>
 // print out table contents
-void HashTable<K,V>::dump() {
+void cop4530::HashTable<K,V>::dump() {
   // iterate through each list in table
-  for (int i = 0; i < table.size(); ++i) {
+  for (size_t i = 0; i < table.size(); ++i) {
     auto &list = table[i];
     auto itr = list.begin();
 
@@ -208,7 +205,7 @@ void HashTable<K,V>::dump() {
 
 template <typename K, typename V>
 // write contents of hashtable to file
-bool HashTable<K,V>::write_to_file(const char* filename) {
+bool cop4530::HashTable<K,V>::write_to_file(const char* filename) {
   // create ifstream then open file filename
   std::ofstream file;
   file.open(filename);
@@ -218,7 +215,7 @@ bool HashTable<K,V>::write_to_file(const char* filename) {
     return false;
   }
 
-  for (int i = 0; i < table.size(); ++i) {
+  for (size_t i = 0; i < table.size(); ++i) {
     // iterate through each list in table
     auto &list = table[i];
     auto itr = list.begin();
@@ -243,15 +240,15 @@ bool HashTable<K,V>::write_to_file(const char* filename) {
 
 template <typename K, typename V>
 // accesses size data for hashtable
-int HashTable<K,V>::getSize() {
-  return size;
+int cop4530::HashTable<K,V>::getSize() {
+  return tSize;
 }
 
 template <typename K, typename V>
 // delete all elements in hashtable, clear() calls this
-void HashTable<K,V>::makeEmpty() {
+void cop4530::HashTable<K,V>::makeEmpty() {
   // set size back to zero
-  size = 0;
+  tSize = 0;
   
   // iterate through each value in table 
   // use built in list.clear() to empty  
@@ -262,7 +259,7 @@ void HashTable<K,V>::makeEmpty() {
 
 template <typename K, typename V>
 // call when elements > vec.size()
-void HashTable<K,V>::rehash() {
+void cop4530::HashTable<K,V>::rehash() {
   // move data from table to old_table
   // allows for old_table to be destroyed after rehash
   auto old_table = table;
@@ -283,7 +280,7 @@ void HashTable<K,V>::rehash() {
 
 template <typename K, typename V>
 // return vector index in which k is stored
-size_t HashTable<K,V>::myhash(const K& k) {
+size_t cop4530::HashTable<K,V>::myhash(const K& k) {
   // get hash h
   std::hash<K> h;
 
@@ -295,7 +292,7 @@ template <typename K, typename V>
 // returns largest prime number <= n or zero if input is too large
 // This is likely to be more efficient than prime_above(), because
 // it only needs a vector of size n
-unsigned long HashTable<K, V>::prime_below (unsigned long n)
+unsigned long cop4530::HashTable<K, V>::prime_below (unsigned long n)
 {
   if (n > max_prime)
     {
@@ -327,7 +324,7 @@ unsigned long HashTable<K, V>::prime_below (unsigned long n)
 
 template <typename K, typename V>
 // sets all prime number indexes to 1. Called by method prime_below(n) 
-void HashTable<K,V>::setPrimes(std::vector<unsigned long>& vprimes)
+void cop4530::HashTable<K,V>::setPrimes(std::vector<unsigned long>& vprimes)
 {
   int i = 0;
   int j = 0;

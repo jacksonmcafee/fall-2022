@@ -70,10 +70,9 @@ namespace cop4530 {
 			std::vector<std::list<std::pair<K,V>>> table;
 
 			// stores size of hashtable
-			size_t size;
+			size_t tSize;
 	};
 }
-
 
 // include class definitions
 #include "hashtable.hpp"

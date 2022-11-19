@@ -1,6 +1,5 @@
 #include "base64.h"
-
-using namespace cop4530;
+#include "hashtable.h"
 
 class PassServer {
 	
@@ -22,5 +21,5 @@ class PassServer {
 	
 	private:
 		std::string encrypt(const std::string& str);
-		HashTable<std::string, std::string> passServer;
+		cop4530::HashTable<std::string, std::string> passServer;
 };
