@@ -21,7 +21,6 @@ void Menu()
 int main() { 
   // create essential variables
   char ch;
-  char* input1 = nullptr;
   string s1, s2, s3;
   PassServer ps = PassServer();
 
@@ -33,8 +32,8 @@ int main() {
     switch (ch) {
       case 'l':
         // get filename
-        cin >> input1;
-        ps.load(input1);
+        cin >> s1;
+        ps.load(s1.c_str());
         break;
 
       case 'a':
@@ -45,33 +44,40 @@ int main() {
       
       case 'r':
         // get username
-        cin >> input1;
-        ps.removeUser(input1);
+        cin >> s1;
+        ps.removeUser(s1);
         break;
 
       case 'c':
+        // get username, old pswd, new pswd
         cin >> s1 >> s2 >> s3;
         ps.changePassword(make_pair(s1, s2), s3);
         break;
 
       case 'f':
+        // get username
         cin >> s1;
         ps.find(s1);
         break;
 
       case 'd':
+        // print passwordserver
         ps.dump();
         break;
 
       case 's':
-        cout << ps.getSize() << endl;
+        // print size 
+        cout << ps.getSize() / 2 << endl;
         break;
       
       case 'w':
-        cin >> input1;
-        ps.write_to_file(input1);
+        // save info to file
+        cin >> s1;
+        ps.write_to_file(s1.c_str());
+        break;
 
       case 'x':
+        // exit
         return 0;
     }
   }

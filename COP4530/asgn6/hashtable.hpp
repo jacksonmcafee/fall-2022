@@ -69,6 +69,7 @@ bool cop4530::HashTable<K,V>::insert(const std::pair<K, V> & kv) {
         // if size+1 is greater than current size, rehash table
         if (tSize++ > table.size()) {
           rehash();
+          tSize--;
         }
 
         // insert pair normally
@@ -103,6 +104,7 @@ bool cop4530::HashTable<K,V>::insert(std::pair<K, V> && kv) {
         // if size+1 is greater than current size, rehash table
         if (tSize++ > table.size()) {
           rehash();
+          tSize--;
         }
 
         // insert pair normally
@@ -138,6 +140,7 @@ bool cop4530::HashTable<K,V>::remove(const K& k) {
       if (itr->first == k) {
         // erase itr from list, return true
         list.erase(itr);
+        tSize--;
         return true;
       }
     }
