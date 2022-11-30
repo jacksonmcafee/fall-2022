@@ -1,6 +1,4 @@
-import java.util.*;
-
-public class AllLower implements CustomTest<String> {
+ public class AllLower implements CustomTest<String> {
     public boolean test(String element) {
         // cast element to char[] to make it iterable
         // ch_ar = char array hahahahahahaha...
