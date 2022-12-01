@@ -1,0 +1,92 @@
+# Know the difference between a Decoder and Multiplexer
+multiplexers (MUX) take many inputs lines and reduce them down to one output line
+decoders have both many inputs and many outputs. it has n inputs and m = 2^n outputs.
+
+# Know what a full adder and half adder are and how to recognize them.
+https://www.geeksforgeeks.org/difference-between-half-adder-and-full-adder/
+
+# Know that a Program Logic Array builds on the sum-of-products representation
+ 
+# Know the difference between a rising edge and falling edge trigger
+rising edge triggers when the input transitions from LOW to HIGH (0 -> 1)
+falling edge triggers when the input transitions from HIGH to LOW (1 -> 0)
+
+# Know what a clock is and how it is used in synchronous circuits
+A clock is an electronic oscillator that generates pulses at defined intervals. 
+They are used so that changes in logical levels of storage components is simultaneous. 
+
+# Know how a multiplexer works
+A MUX works by https://www.electrical4u.com/multiplexer/
+
+Be able to match the boolean identity laws to their respective equations.  
+https://www.allaboutcircuits.com/technical-articles/boolean-identities/
+ 
+Be able to produce an unsimplified sum-of-products equation from a truth table and reduce it either using a K-MAP or boolean algebra laws. 
+ 
+# Translate assembly code into machine code for the following instructions 
+- Add (add $3, $5, $1) -> 000000 00101 00001 00011 00000 100000
+                       -> opcode rs    rt    rd    shamt funct
+                       ->        $5    $1    $3 
+
+- Addi (addi $24, $27, 1) -> 001000 11011 11000 0000000000000001
+                          -> opcode rs    rd    immediate
+                          ->        $27   $24   1
+
+- Sub (sub $8, $2, $6) -> 000000 00010 00110 01000 00000 100010
+                       -> opcode rs    rt    rd    shamt funct
+                       ->        $2    $6,   $8  
+
+- sll (sll $t0, $1, 10) -> 000000 00000 01001 01000 01010 000000
+                        -> opcode rs    rt    rd    shamt funct 
+                        ->        N/A   $9,   $8    10   
+
+- ori (ori $8, $0, 4005) -> 001101 00000 01000 00001 11110100101
+                         -> opcode rs    rt    rd    immediate
+                         ->        N/A   $8    $0    4005
+ 
+# Be able to write assembly code for the following situations
+# Print a string
+.data
+string: .asciiz "\nThis is a string."
+
+.text
+la $a0, string
+li $v0, 4
+syscall
+
+# Read a number
+li $v0, 5
+syscall
+
+# Move a number from one register to another
+move $t0, $t1           # set $t0 = $t1
+
+# Branch instruction
+beq $t0, $t1, loc       # branch to loc if $t0 and $t1 are equal       
+bne $t0, $t1, loc       # branch to loc if $t0 and $t1 are not equal
+blt $t0, $t1, loc       # branch to loc if $t0 < $t1 
+
+# Divide a number and examine the quotient or remainder
+div $t0, $t1            # divides $t0 / $t1 
+                        # returns remainder to $hi
+                        # returns quotient to $lo
+
+# Code to declare an array of a certain size
+.data
+arr:        .space [bits]
+
+# Assembly directives to put the next item on a full word boundary
+
+
+# Difference between an addi and addiu instruction
+addi adds a constant value, addiu adds a constant value TREATED AS UINT
+
+Convert a number from an integer to single floating point
+mtc1 $a0, $f12      # move to $f12 register
+cvt.s.w $f12, $f12  # convert $f12 to single
+
+Convert a single floating point to an integer 
+mtc1 $f14, $f12     # move val to $f12
+cvt.w.s $f12, $f12  # convert $f12 to int
+move $a0, $f12      # set $a0 = $f12
+
