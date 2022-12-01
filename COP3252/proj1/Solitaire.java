@@ -57,7 +57,6 @@ public class Solitaire {
             Pile pile = piles.get(i);
             // for each tableau, deal some number of cards
             for (int j = i + 1; j != 0; --j) {
-                System.out.println("Card pulled!");
                 // populate pile i with a pulled card
                 // pile[-1] == top of the pile
                 pile.Add(deck.Pull());
@@ -81,8 +80,8 @@ public class Solitaire {
             {
                 Card card = pile.Get(j);
                 // gross, but if card c == pile top card, set visibility to true
-                if (card == pile.Get(pile.Size() - 1)) {
-                    card.setVisible(true);
+                if (card == pile.Get(pile.Size()-1)) {
+                    card.setFaceUp(true);
                 }
             }
         }
