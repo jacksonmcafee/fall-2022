@@ -12,7 +12,14 @@ public class Board extends JFrame {
         frame.setLayout(null);
         frame.setSize(1000,800);
 
-        // create deck panel component
+
+        // each foundation needs a snapping location
+        for (int i = 0; i < 4; ++i) {
+
+        }
+
+        // the hand and deck needs a snapping location
+
         Card card = new Card(SuitEnum.Hearts, RankEnum.Queen);
         CardPanel cardPanel = new CardPanel(card);
         frame.add(cardPanel);
