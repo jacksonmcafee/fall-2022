@@ -1,0 +1,17 @@
+Reading the input set:
+This scales at O(n) time because it is entirely dependent on how many lines of input are being provided.
+If one line of input is provided, it will take n time. If 10 lines are provided, it will take 10n time. Therefore,
+it must be O(n).
+
+Storing characters and setting up tracking values:
+The actual storage of characters is not that complex of a process. Map insertions should be in 
+O(log(n)) time. Coupled with the search, which is also O(log(n)), the total time complexity for the 
+process should be just O(log(n)).
+
+Looking up the characters and tracking values:
+Again, because std::find() is implemented in the storage process, we already know that lookup is done 
+in O(log(n)) time. 
+
+Sorting the "Top Ten" for frequency:
+During the vector sort, I use std::sort(), which has O(n log(n)) complexity when n = last - first, which it does
+in our case. It is used multiple times, but it shold still evaluate down to O(n log(n)).
