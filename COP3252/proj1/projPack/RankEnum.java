@@ -14,5 +14,4 @@ public enum RankEnum {
     Jack,
     Queen,
     King,
-    Null;
 }

@@ -9,30 +9,18 @@ import java.util.Collections;
 import projPack.*;
 
 /*
-Deck is implemented as a JLayeredPane because it must be stackable.
-Deck is also a parent class to Pile. Pile has stackability but is not
-layered directly on top of one another like deck is. Deck only renders
-the very top card in its hierarchy. 
-
 Deck is implements a Vector of cards because cards must be able to be moved singly and 
 as a unit (moving a pile). 
 */
 
 
-public class Deck extends JLayeredPane {
+public class Deck {
     // because deck needs to have cards added AND removed, 
     // vectors are easily applicable. stacks are an alternative.
     private Vector<Card> deck;
 
     // in case of an error, throw dummy
     private Card dummy;
-
-    // playable decks are the tableaus
-    protected boolean playable;
-
-    // deck absolute location
-    protected int locX = 0;
-    protected int locY = 0;
 
     // main deck constructor
     public Deck() throws IOException {
@@ -44,10 +32,6 @@ public class Deck extends JLayeredPane {
         
         // shuffle deck
         RandomizeDeck();
-
-        // set visual components 
-        this.setLayout(null);
-        playable = true;
     }
 
     public Deck(int vals) {
@@ -116,13 +100,10 @@ public class Deck extends JLayeredPane {
         return card;
     }
 
-    public Deck splitDeck(Card c) {
-        // arbitrary value of 20, just larger than any other possible
-        // deck according to the rules of Solitaire
-        Deck d = new Deck(20);
-
-        for (int i = 0; i < deck.size(); ++i) {
-            if (deck.get(i) == 
-        }
+    public Card getCard() {
+        // pulls top card and removes it from the deck
+        Card c = deck.get(0);
+        deck.remove(0);
+        return c;
     }
 }

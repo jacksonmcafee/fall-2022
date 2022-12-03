@@ -1,9 +1,12 @@
 package projPack;
 
 public enum SuitEnum {
-    Spades,
-    Hearts,
-    Diamonds,
-    Clubs,
-    Null;
+    Spades(true),
+    Hearts(false),
+    Diamonds(true),
+    Clubs(false);
+
+    private final boolean isBlack;
+    private SuitEnum(final boolean isBlack) { this.isBlack = isBlack; }
+    public boolean isBlack() { return isBlack; }
 }

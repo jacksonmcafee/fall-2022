@@ -1,6 +1,4 @@
-// Texas Hold'em Poker, main project file
-// Very liberal use of ArrayList in this project...
-
+// Solitaire, main project file
 import java.util.ArrayList;
 import java.util.Collections;
 
